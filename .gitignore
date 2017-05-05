@@ -11,3 +11,6 @@
 /*.pidb
 /*.booproj
 
+/Assets/Extras
+/Assets/Extras.meta
+
