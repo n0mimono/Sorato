@@ -164,7 +164,7 @@ QualitySettings:
     excludedTargetPlatforms: []
   - serializedVersion: 2
     name: Sorato
-    pixelLightCount: 4
+    pixelLightCount: 2
     shadows: 2
     shadowResolution: 2
     shadowProjection: 0
@@ -181,7 +181,7 @@ QualitySettings:
     softVegetation: 1
     realtimeReflectionProbes: 1
     billboardsFaceCameraPosition: 1
-    vSyncCount: 1
+    vSyncCount: 2
     lodBias: 2
     maximumLODLevel: 0
     particleRaycastBudget: 4096
