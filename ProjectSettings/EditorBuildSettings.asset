@@ -4,4 +4,10 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Sorato.unity
+    guid: 30b108be8fb46413dbc2046cabdc27bf
+  - enabled: 1
+    path: Assets/Scenes/SoratoUi.unity
+    guid: f662c768bf04a491fa3d85f1509392a1
