@@ -12,6 +12,9 @@ public class UiManager : MonoBehaviour {
   public Image basePanel;
   public IObservable<Vector2> baseChanged { private set; get; }
 
+  [Header("Text")]
+  public Text text;
+
   [Header("Rotation")]
   public Image rot;
   public Image rotSub;

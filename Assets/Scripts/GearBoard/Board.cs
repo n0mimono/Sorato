@@ -11,8 +11,21 @@ namespace GearBoard {
 
     public void Build() {
       kinematics = new Kinematics (
-        new Engine(new Engine.Status() { speed = 50f, acceleration = 1f } ),
-        new Rotater(new Rotater.Status() { speed = 30f, acceleration = 1f } ),
+        new Engine(new Engine.Status() {
+          speed = 30f,
+          acceleration = 1f
+        }),
+        new Rotater(new Rotater.Status() {
+          speed = 30f,
+          acceleration = 1f,
+          zFactor = 2f
+        }),
+        new Booster(new Booster.Status() {
+          speed = 2f,
+          consumePerShot = 0.2f,
+          recoverPerSec = 0.2f,
+          deceleration = 1f
+        }),
         transform
       );
     }

@@ -33,15 +33,24 @@ public class GameManager : MonoBehaviour {
       .Subscribe(v => board.kinematics.rotater.SetRotate(v.b, v.item.eulerAngles.z));
     ui.engChanged
       .Subscribe(i => board.kinematics.engine.SetState((Engine.State)i));
+    ui.dashBtn.onClick.AsObservable ()
+      .Subscribe (_ => board.kinematics.booster.Consume ());
+    yield return null;
+
+    ui.text.UpdateAsObservable ()
+      .Subscribe (_ => ui.text.text = board.kinematics.ToString());
+    ui.dashGauge.UpdateAsObservable ()
+      .Subscribe (_ => ui.dashGauge.fillAmount = board.kinematics.booster.power); 
     yield return null;
 
     ui.baseChanged
       .Select (a => new Vector3 (-a.y, a.x, 0f))
       .Subscribe (a => camera.current.Rotate (a));
-    board.LateUpdateAsObservable ()
-      .Subscribe (_ => camera.current.SetTargetPosition (board.transform.position));
     camera.LateUpdateAsObservable ()
-      .Subscribe (_ => camera.UpdateCamera ());
+      .Subscribe (_ => {
+        camera.current.SetTargetPosition (board.transform.position); 
+        camera.UpdateCamera ();
+      });
     yield return null;
 
     board.kinematics.engine.SetState (Engine.State.Stop);

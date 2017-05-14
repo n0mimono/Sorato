@@ -4,12 +4,45 @@ using UnityEngine;
 using UniRx;
 
 namespace GearBoard {
+  public class Booster {
+    public class Status {
+      public float speed;
+      public float consumePerShot;
+      public float recoverPerSec;
+      public float deceleration;
+    }
+    private Status status;
+
+    public Booster(Status status) {
+      this.status = status;
+    }
+
+    public float power { private set; get; }
+    public float speed { private set; get; }
+
+    public bool Consume() {
+      if (power < status.consumePerShot) {
+        return false;
+      } else {
+        speed = status.speed;
+        power -= status.consumePerShot;
+        return true;
+      }
+    }
+
+    public void Update(float dt) {
+      power = Mathf.Clamp01 (power + status.recoverPerSec * dt);
+      speed = Mathf.Lerp (speed, 1f, status.deceleration * dt);
+    }
+  }
+
   public class Engine {
     public class Status {
       public float speed;
       public float acceleration;
     }
     private Status status;
+    private Booster booster;
 
     public enum State {
       TopForward = 0,
@@ -37,10 +70,10 @@ namespace GearBoard {
       this.state = state;
     }
 
-    public void Update(float dt) {
+    public void Update(float dt, float addSpd) {
       speed = Mathf.Lerp (
         speed,
-        stateRates [(int)state] * status.speed,
+        stateRates [(int)state] * status.speed * addSpd,
         status.acceleration * dt
       );
     }
@@ -50,6 +83,7 @@ namespace GearBoard {
     public class Status {
       public float speed;
       public float acceleration;
+      public float zFactor;
     }
     private Status status;
 
@@ -70,7 +104,7 @@ namespace GearBoard {
         this.rotTarget = new Vector3 (
           Mathf.Cos(packedZ * Mathf.Deg2Rad),
           -Mathf.Sin(packedZ * Mathf.Deg2Rad),
-          0f
+          Mathf.Sin(packedZ * Mathf.Deg2Rad) * status.zFactor
         );
       } else {
         this.rotTarget = Vector3.zero;
@@ -90,18 +124,21 @@ namespace GearBoard {
   public class Kinematics {
     public Engine engine { private set; get; }
     public Rotater rotater { private set; get; }
+    public Booster booster { private set; get; }
 
     Transform trans;
 
-    public Kinematics(Engine engine, Rotater rotater, Transform tran) {
+    public Kinematics(Engine engine, Rotater rotater, Booster booster, Transform tran) {
       this.engine = engine;
       this.rotater = rotater;
+      this.booster = booster;
       this.trans = tran;
     }
 
     public void Update(float dt) {
-      engine.Update (dt);
+      engine.Update (dt, booster.speed);
       rotater.Update (dt);
+      booster.Update (dt);
 
       Apply (dt);
     }
@@ -110,9 +147,16 @@ namespace GearBoard {
       trans.localEulerAngles = new Vector3 (
         rotater.rotSpeed.x,
         trans.localEulerAngles.y + rotater.rotSpeed.y * dt,
-        0f
+        rotater.rotSpeed.z
       );
       trans.localPosition += engine.speed * trans.forward * dt;
+    }
+
+    public override string ToString () {
+      return string.Format ("Height: {0:F1}\nSpeed: {1:F1}",
+        trans.position.y,
+        engine.speed
+      );
     }
   }
 

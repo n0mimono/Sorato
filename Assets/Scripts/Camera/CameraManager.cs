@@ -21,12 +21,17 @@ public class CameraManager : MonoBehaviour {
 public class CameraBase {
   public class Target {
     public Vector3 position;
+
+    public void Update(Vector3 point, float scl) {
+      position = Vector3.Lerp (position, point, scl);
+    }
   }
   public Target target { private set; get; }
 
   public class Transform {
     public float speed;
     public float length;
+    public float delay;
 
     public Vector3 angs;
 
@@ -43,8 +48,8 @@ public class CameraBase {
       if (angs.x < 0f && angs.x >= 70f) {
         angs.x = 70f;
       }
-      if (angs.x < 0f && angs.x <= 290f) {
-        angs.x = 290f;
+      if (angs.x < 0f && angs.x <= -70f) {
+        angs.x = -70f;
       }
     }
   }
@@ -52,11 +57,11 @@ public class CameraBase {
 
   public CameraBase() {
     target = new Target();
-    trans = new Transform () { length = 5f, speed = 0.1f };
+    trans = new Transform () { length = 5f, speed = 0.1f, delay = 10f };
   }
 
   public void SetTargetPosition(Vector3 point) {
-    target.position = point;
+    target.Update (point, trans.delay * Time.deltaTime);
     trans.Update (target);
   }
 
