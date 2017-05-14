@@ -10,12 +10,12 @@ using UniRx.Triggers;
 public class UiManager : MonoBehaviour {
   [Header("Base")]
   public Image basePanel;
-  public IObservable<Vector2> baseSwiped;
+  public IObservable<Vector2> baseChanged { private set; get; }
 
   [Header("Rotation")]
   public Image rot;
-  public List<Image> rotSubs;
-  public IObservable<int> rotChanged;
+  public Image rotSub;
+  public IObservable<BooledVariable<Quaternion>> rotChanged { private set; get; }
 
   [Header("Dash")]
   public Button dashBtn;
@@ -23,7 +23,7 @@ public class UiManager : MonoBehaviour {
 
   [Header("Engine")]
   public List<Button> engBtns;
-  public IObservable<int> engClicked;
+  public IObservable<int> engChanged { private set; get; }
 
   [Header("Fire")]
   public Button fireBtn;
@@ -31,6 +31,7 @@ public class UiManager : MonoBehaviour {
   public Text fireText;
 
   public IEnumerator Build() {
+    BuildBase ();
     BuildRotater ();
     BuildEngine ();
     yield return null;
@@ -38,7 +39,7 @@ public class UiManager : MonoBehaviour {
 
   void BuildBase() {
     var baseGes = basePanel.GetComponent<UiGesture> ();
-    baseSwiped = baseGes.OnSwipe.Select (s => s.delta);
+    baseChanged = baseGes.OnSwipe.Select (s => s.delta);
   }
 
   void BuildRotater() {
@@ -48,10 +49,10 @@ public class UiManager : MonoBehaviour {
     var onRotUpdate = Observable.Merge (rotGes.OnDown, rotGes.OnSwipe);
     var onRotDisabled = rotGes.OnUp;
 
-    var enabledColor = new Color (1f, 1f, 1f, 1f);
-    var disabledColor = new Color (0.2f, 0.2f, 0.2f, 0.5f);
+    var disabledColor = new Color (1f, 1f, 1f, 0.25f);
+    var enabledColor = new Color (0.2f, 0.2f, 0.2f, 0.5f);
 
-    Subject<int> rotSbj = new Subject<int> ();
+    Subject<BooledVariable<Quaternion>> rotSbj = new Subject<BooledVariable<Quaternion>> ();
     rotChanged = rotSbj;
 
     onRotUpdate
@@ -59,32 +60,35 @@ public class UiManager : MonoBehaviour {
       .Select (p => {
         var dir = (p - rotTrans.position).normalized;
         return Quaternion.FromToRotation (Vector3.up, dir);
-      })
-      .Select (q => {
-        int count = rotSubs.Count;
-        int index = (int)(q.eulerAngles.z / 360f * count + 0.5f);
-        index = (index + count) % count;
-        return index;
-      })
-      .Subscribe (index => rotSbj.OnNext (index));
+      }).Subscribe (q => rotSbj.OnNext (new BooledVariable<Quaternion>() { item = q, b = true }));
 
     onRotDisabled
-      .Subscribe (_ => rotSbj.OnNext (-1));
+      .Subscribe (_ => rotSbj.OnNext (new BooledVariable<Quaternion>() { item = Quaternion.identity, b = false }));
 
     rotSbj
-      .Subscribe (index => {
-        rotSubs.ForEach(s => s.color = disabledColor);
-        if (index > -1) {
-          rotSubs[index].color = enabledColor;
+      .Select(v => v.item)
+      .Subscribe (q => {
+        rotSub.transform.rotation =
+          q * Quaternion.AngleAxis(360f * rotSub.fillAmount * 0.5f, Vector3.forward);
+      });
+
+    rotSbj
+      .Subscribe (v => {
+        if (v.b) {
+          rotSub.enabled = true;
+          rot.color = enabledColor;
+        } else {
+          rotSub.enabled = false;
+          rot.color = disabledColor;
         }
       });
 
-    rotSubs.ForEach(s => s.color = disabledColor);
+    rotSbj.OnNext (new BooledVariable<Quaternion> () { item = Quaternion.identity, b = false });
   }
 
   void BuildEngine() {
     Subject<int> engSbj = new Subject<int> ();
-    engClicked = engSbj;
+    engChanged = engSbj;
 
     engSbj
       .Subscribe (index => {
