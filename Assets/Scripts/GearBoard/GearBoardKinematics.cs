@@ -10,6 +10,7 @@ namespace GearBoard {
       public float consumePerShot;
       public float recoverPerSec;
       public float deceleration;
+      public float wait;
     }
     private Status status;
 
@@ -26,12 +27,16 @@ namespace GearBoard {
       } else {
         speed = status.speed;
         power -= status.consumePerShot;
+        status.wait = 0.5f;
         return true;
       }
     }
 
     public void Update(float dt) {
-      power = Mathf.Clamp01 (power + status.recoverPerSec * dt);
+      status.wait -= dt;
+      if (status.wait <= 0f) {
+        power = Mathf.Clamp01 (power + status.recoverPerSec * dt);
+      }
       speed = Mathf.Lerp (speed, 1f, status.deceleration * dt);
     }
   }
@@ -128,6 +133,9 @@ namespace GearBoard {
 
     Transform trans;
 
+    public const float MaxHeight = 200f;
+    public const float MinHeight = 2f;
+
     public Kinematics(Engine engine, Rotater rotater, Booster booster, Transform tran) {
       this.engine = engine;
       this.rotater = rotater;
@@ -144,12 +152,16 @@ namespace GearBoard {
     }
 
     void Apply(float dt) {
-      trans.localEulerAngles = new Vector3 (
+      Vector3 angles = new Vector3 (
         rotater.rotSpeed.x,
         trans.localEulerAngles.y + rotater.rotSpeed.y * dt,
         rotater.rotSpeed.z
       );
-      trans.localPosition += engine.speed * trans.forward * dt;
+      trans.localEulerAngles = angles;
+
+      Vector3 position = trans.localPosition + engine.speed * trans.forward * dt;
+      position.y = Mathf.Clamp (position.y, MinHeight, MaxHeight);
+      trans.localPosition = position;
     }
 
     public override string ToString () {
