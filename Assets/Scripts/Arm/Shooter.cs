@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Shooter : MonoBehaviour {
   public Transform[] slotOrigins;
-  public Arrow arrow;
+  public int arrowNo;
 
   public class Slot {
     public Transform origin;
@@ -73,12 +73,13 @@ public class Shooter : MonoBehaviour {
     status.Shoot ();
     var origin = slots [curSlot].origin;
 
-    Arrow inst = arrow.Create();
-    inst.Build (new Arrow.Params () {
+    var arrow = ObjectPool.GetInstance (PoolType.Arrow, arrowNo)
+      .GetComponent<Arrow> ();
+    arrow.Build (new Arrow.Params () {
       target = target,
       origin = origin
     });
-    inst.Shoot ();
+    arrow.Shoot ();
 
     curSlot = (curSlot + 1) % slots.Count;
   }

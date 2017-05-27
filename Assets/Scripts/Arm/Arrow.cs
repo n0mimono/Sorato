@@ -4,9 +4,8 @@ using System;
 using UnityEngine;
 
 public class Arrow : MonoBehaviour {
-  public Disintegrator explosion;
-  public Disintegrator splash;
   public bool waterable;
+  public int explosionNo;
 
   public struct Params {
     public DamageReceptor target;
@@ -25,9 +24,12 @@ public class Arrow : MonoBehaviour {
   bool isActive;
   float elapse;
 
+  PoolObject pooled;
+
   public void Build(Params p) {
     this.p = p;
     source = GetComponent<DamageSource> ();
+    pooled = GetComponent<PoolObject> ();
   }
 
   public void Shoot() {
@@ -36,13 +38,7 @@ public class Arrow : MonoBehaviour {
 
     transform.position = p.origin.position;
     transform.forward = p.origin.up * -1f;
-
-    gameObject.SetActive (true);
-  }
-
-  public Arrow Create() {
-    Arrow a = Instantiate (this, transform.parent);
-    return a;
+    pooled.SetActive (true);
   }
 
   void Update() {
@@ -79,26 +75,24 @@ public class Arrow : MonoBehaviour {
   void Hit(RaycastHit hit) {
     if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Water")) {
       Vector3 a = Vector3.up * transform.eulerAngles.y;
-      splash.Create().Build(transform, hit.point, a);
+
+      var splash = ObjectPool.GetInstance (PoolType.Splash, 0);
+      splash.Activate (hit.point, a);
 
       if (!waterable) {
-        StartCoroutine (ProcDestroy ());
+        pooled.Kill ();
       }
     } else if (elapse >= 0.5f) {
-      explosion.Build (transform, hit.point, transform.eulerAngles);
-      StartCoroutine (ProcDestroy ());
+      var explosion = ObjectPool.GetInstance (PoolType.Explosion, explosionNo);
+      explosion.Activate (hit.point, transform.eulerAngles);
 
       var recep = hit.collider.GetComponent<DamageReceptor> ();
       if (recep != null) {
         recep.Receive (source);
       }
-    }
-  }
 
-  IEnumerator ProcDestroy() {
-    isActive = false;
-    yield return new WaitForSeconds (5f);
-    Destroy (gameObject);
+      pooled.Kill ();
+    }
   }
 
 }
