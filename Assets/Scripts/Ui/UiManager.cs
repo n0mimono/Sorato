@@ -23,6 +23,7 @@ public class UiManager : MonoBehaviour {
   [Header("Dash")]
   public Button dashBtn;
   public Image dashGauge;
+  public Text dashText;
 
   [Header("Engine")]
   public List<Button> engBtns;
@@ -32,6 +33,16 @@ public class UiManager : MonoBehaviour {
   public Button fireBtn;
   public Image fireGauge;
   public Text fireText;
+
+  [Header("Target")]
+  public Image playerTarget;
+  public Text playerTargetTxt;
+
+  [Header("Extra")]
+  public Button extra;
+
+  [Header("Player")]
+  public UiCharacter chara;
 
   public IEnumerator Build() {
     BuildBase ();
@@ -78,10 +89,10 @@ public class UiManager : MonoBehaviour {
     rotSbj
       .Subscribe (v => {
         if (v.b) {
-          rotSub.enabled = true;
+          rotSub.SetJointEnabled(true);
           rot.color = enabledColor;
         } else {
-          rotSub.enabled = false;
+          rotSub.SetJointEnabled(false);
           rot.color = disabledColor;
         }
       });
@@ -105,6 +116,11 @@ public class UiManager : MonoBehaviour {
     }
 
     engSbj.OnNext (2);
+  }
+
+  public void UpdateTargetPosition(Vector3 pos, float dist) {
+    playerTarget.transform.position = pos;
+    playerTargetTxt.text = dist.ToString ("F1") + " m";
   }
 
 }

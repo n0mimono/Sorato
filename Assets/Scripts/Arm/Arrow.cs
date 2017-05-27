@@ -80,7 +80,7 @@ public class Arrow : MonoBehaviour {
       splash.Activate (hit.point, a);
 
       if (!waterable) {
-        pooled.Kill ();
+        Kill ();
       }
     } else if (elapse >= 0.5f) {
       var explosion = ObjectPool.GetInstance (PoolType.Explosion, explosionNo);
@@ -91,8 +91,14 @@ public class Arrow : MonoBehaviour {
         recep.Receive (source);
       }
 
-      pooled.Kill ();
+      Kill ();
     }
+  }
+
+  void Kill() {
+    isActive = false;
+
+    pooled.Kill ();
   }
 
 }

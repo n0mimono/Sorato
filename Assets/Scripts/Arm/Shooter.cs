@@ -44,6 +44,11 @@ public class Shooter : MonoBehaviour {
   public Status status { private set; get; }
 
   public DamageReceptor target { private set; get; }
+  public float distToTarget {
+    get {
+      return Vector3.Distance (transform.position, target.position);
+    }
+  }
 
   public void Build(Status status) {
     slots = slotOrigins

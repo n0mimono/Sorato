@@ -52,12 +52,21 @@ public class GameManager : MonoBehaviour {
     ui.text.UpdateAsObservable ()
       .Subscribe (_ => ui.text.text = board.kinematics.ToString());
     ui.dashGauge.UpdateAsObservable ()
-      .Subscribe (_ => ui.dashGauge.fillAmount = board.kinematics.booster.power); 
+      .Subscribe (_ => {
+        ui.dashGauge.fillAmount = board.kinematics.booster.power; 
+        ui.dashText.text = Mathf.RoundToInt(board.kinematics.booster.power * 100).ToString();
+      });
     ui.fireGauge.UpdateAsObservable ()
       .Subscribe (_ => {
         ui.fireGauge.fillAmount = board.shooter.status.power;
         ui.fireText.text = board.shooter.status.count.ToString();
       });
+    yield return null;
+
+    ui.extra.onClick.AddListener (() => {
+      var post = camera.GetComponent<UnityEngine.PostProcessing.PostProcessingBehaviour>();
+      post.enabled = !post.enabled;
+    });
     yield return null;
 
     board.kinematics.engine.SetState (Engine.State.Stop);
@@ -66,7 +75,11 @@ public class GameManager : MonoBehaviour {
     foreach (var dmg in board.damages) {
       dmg.OnDamage
         .Subscribe (d => camera.Shake ());
+      dmg.OnDamage
+        .Subscribe (d => ui.chara.SetFace(CharaFace.Ouch));
     }
+    tgtMan.OnDamage
+      .Subscribe (d => ui.chara.SetFace (CharaFace.Smile));
     yield return null;
 
     ui.baseChanged
@@ -76,6 +89,9 @@ public class GameManager : MonoBehaviour {
       .Subscribe (_ => {
         camera.current.SetTargetPosition (board.transform.position); 
         camera.UpdateCamera ();
+
+        var p = camera.ScreenPosition(board.shooter.target.position);
+        ui.UpdateTargetPosition(p, board.shooter.distToTarget);
       });
     yield return null;
 

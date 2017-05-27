@@ -8,6 +8,12 @@ public class DamageReceptor : MonoBehaviour {
   public IObservable<Damage> OnDamage { private set; get; }
   Subject<Damage> dmgSubject;
 
+  public Vector3 position {
+    get {
+      return transform.position;
+    }
+  }
+
   public enum Owner {
     None,
     Player,

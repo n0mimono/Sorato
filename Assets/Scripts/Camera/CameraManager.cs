@@ -34,6 +34,16 @@ public class CameraManager : MonoBehaviour {
     shaker.Invoke ();
   }
 
+  public Vector3 ScreenPosition(Vector3 world) {
+    Vector3 viewPoint = mainCamera.WorldToViewportPoint (world);
+    if (viewPoint.z > 0f) {
+      Vector3 scrPoint = mainCamera.WorldToScreenPoint (world);
+      return new Vector2 (scrPoint.x, scrPoint.y);
+    } else {
+      return new Vector2 (-1000f, -1000f);
+    }
+  }
+
 }
 
 public class CameraBase {
