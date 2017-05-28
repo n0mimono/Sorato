@@ -11,8 +11,9 @@ namespace GearBoard {
       public float recoverPerSec;
       public float deceleration;
       public float wait;
+      public Transform origin;
     }
-    private Status status;
+    public Status status { private set; get; }
 
     public Booster(Status status) {
       this.status = status;
@@ -46,8 +47,7 @@ namespace GearBoard {
       public float speed;
       public float acceleration;
     }
-    private Status status;
-    private Booster booster;
+    public Status status { private set; get; }
 
     public enum State {
       TopForward = 0,
@@ -136,11 +136,34 @@ namespace GearBoard {
     public const float MaxHeight = 200f;
     public const float MinHeight = 2f;
 
+    public IObservable<bool> OnBoosted { private set; get; }
+    private Subject<bool> boostSubject;
+
+    public float speedRate {
+      get {
+        return Mathf.Abs(engine.speed / (engine.status.speed * booster.status.speed));
+        }
+    }
+
     public Kinematics(Engine engine, Rotater rotater, Booster booster, Transform tran) {
       this.engine = engine;
       this.rotater = rotater;
       this.booster = booster;
       this.trans = tran;
+
+      boostSubject = new Subject<bool> ();
+      OnBoosted = boostSubject;
+
+      OnBoosted
+        .Where (b => b)
+        .Subscribe (_ => {
+          var boosted = ObjectPool.GetInstance (PoolType.Boost, 0);
+          boosted.transform.SetParent (booster.status.origin);
+          boosted.Activate (
+            booster.status.origin.position,
+            booster.status.origin.eulerAngles
+          );
+        });
     }
 
     public void Update(float dt) {
@@ -169,6 +192,11 @@ namespace GearBoard {
         trans.position.y,
         engine.speed
       );
+    }
+
+    public void WillBoost() {
+      bool success = booster.Consume ();
+      boostSubject.OnNext (success);
     }
   }
 

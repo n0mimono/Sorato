@@ -44,13 +44,18 @@ public class GameManager : MonoBehaviour {
     ui.engChanged
       .Subscribe(i => board.kinematics.engine.SetState((Engine.State)i));
     ui.dashBtn.onClick.AsObservable ()
-      .Subscribe (_ => board.kinematics.booster.Consume ());
+      .Subscribe (_ => board.kinematics.WillBoost());
     ui.fireBtn.onClick.AsObservable ()
       .Subscribe (_ => board.shooter.WillShoot ());
     yield return null;
 
-    ui.text.UpdateAsObservable ()
-      .Subscribe (_ => ui.text.text = board.kinematics.ToString());
+    ui.spdGauge.UpdateAsObservable ()
+      .Subscribe (_ => {
+        ui.spdGauge.fillAmount = board.kinematics.speedRate;
+        ui.spdText.text = board.kinematics.engine.speed.ToString("F1") + " m/s";
+        ui.heightText.text = board.transform.position.y.ToString("F1") + " m";
+      });
+
     ui.dashGauge.UpdateAsObservable ()
       .Subscribe (_ => {
         ui.dashGauge.fillAmount = board.kinematics.booster.power; 
@@ -70,6 +75,9 @@ public class GameManager : MonoBehaviour {
     yield return null;
 
     board.kinematics.engine.SetState (Engine.State.Stop);
+    board.kinematics.OnBoosted
+      .Where (b => b)
+      .Subscribe (_ => ui.chara.SetFace (CharaFace.Cool));
     yield return null;
 
     foreach (var dmg in board.damages) {

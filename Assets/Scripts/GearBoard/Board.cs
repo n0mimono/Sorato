@@ -7,6 +7,9 @@ namespace GearBoard {
     public GameObject characterRoot;
     public GameObject gearRoot;
 
+    [Header("Options")]
+    public Transform boostOrigin;
+
     public Kinematics kinematics { private set; get; }
     public Shooter shooter { private set; get; }
     public IEnumerable<DamageReceptor> damages {
@@ -32,7 +35,8 @@ namespace GearBoard {
           speed = 3f,
           consumePerShot = 0.2f,
           recoverPerSec = 0.2f,
-          deceleration = 1f
+          deceleration = 1f,
+          origin = boostOrigin
         }),
         transform
       );

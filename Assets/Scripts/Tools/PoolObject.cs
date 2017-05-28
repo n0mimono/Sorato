@@ -45,7 +45,8 @@ public class PoolObject : MonoBehaviour {
 public enum PoolType {
   Arrow,
   Explosion,
-  Splash
+  Splash,
+  Boost,
 }
 
 [Serializable]
