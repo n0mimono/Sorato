@@ -202,6 +202,7 @@ MonoBehaviour:
   status:
     v: 200
     w: 180
+    lifeTime: 10
 --- !u!114 &114357327645690224
 MonoBehaviour:
   m_ObjectHideFlags: 1

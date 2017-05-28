@@ -35,10 +35,6 @@ public class GameManager : MonoBehaviour {
       .Subscribe (t => board.shooter.SetTarget (t));
     yield return null;
 
-    camera.OnUpdated
-      .Subscribe (_ => tgtMan.Update ());
-    yield return null;
-
     ui.rotChanged
       .Subscribe(v => board.kinematics.rotater.SetRotate(v.b, v.item.eulerAngles.z));
     ui.engChanged
@@ -98,8 +94,15 @@ public class GameManager : MonoBehaviour {
         camera.current.SetTargetPosition (board.transform.position); 
         camera.UpdateCamera ();
 
-        var p = camera.ScreenPosition(board.shooter.target.position);
-        ui.UpdateTargetPosition(p, board.shooter.distToTarget);
+        foreach (var c in tgtMan.candidates) {
+          c.UpdateScreenPosition(camera.ScreenPosition(c.receptor.position));
+        }
+
+        var bPos = camera.ScreenPosition(board.transform.position);
+        tgtMan.Update(bPos);
+
+        var tPos = camera.ScreenPosition(board.shooter.target.position);
+        ui.UpdateTargetPosition(tPos, board.shooter.distToTarget);
       });
     yield return null;
 

@@ -134,7 +134,7 @@ namespace GearBoard {
     Transform trans;
 
     public const float MaxHeight = 200f;
-    public const float MinHeight = 2f;
+    public const float MinHeight = 1f;
 
     public IObservable<bool> OnBoosted { private set; get; }
     private Subject<bool> boostSubject;

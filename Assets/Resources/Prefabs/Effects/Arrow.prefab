@@ -209,10 +209,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waterable: 1
-  exp: 0
+  explosionNo: 0
   status:
     v: 200
     w: 360
+    lifeTime: 10
 --- !u!198 &198031031283701704
 ParticleSystem:
   m_ObjectHideFlags: 1

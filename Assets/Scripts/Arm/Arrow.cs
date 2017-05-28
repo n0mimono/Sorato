@@ -17,6 +17,7 @@ public class Arrow : MonoBehaviour {
   public class Status {
     public float v;
     public float w;
+    public float lifeTime;
   }
   public Status status;
 
@@ -49,6 +50,11 @@ public class Arrow : MonoBehaviour {
 
   void UpdateKinematics() {
     elapse += Time.deltaTime;
+
+    if (elapse > status.lifeTime) {
+      Kill ();
+      return;
+    }
 
     if (Vector3.Distance (p.target.transform.position, transform.position) > 20f) {
       var dir = (p.target.transform.position - transform.position).normalized;
