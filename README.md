@@ -1,6 +1,6 @@
 # Sorato (WIP)
 
-<img src="https://github.com/n0mimono/Sorato/raw/master-ss/Screenshots/wip.png" width="640">
+<img src="https://github.com/n0mimono/Sorato/wiki/Screenshots/screenshot_00.png" width="640">
 
 ---
 
