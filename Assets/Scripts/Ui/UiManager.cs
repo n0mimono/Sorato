@@ -16,6 +16,7 @@ public class UiManager : MonoBehaviour {
   public Image rot;
   public Image rotSub;
   public IObservable<BooledVariable<Quaternion>> rotChanged { private set; get; }
+  Subject<BooledVariable<Quaternion>> rotSbj;
 
   [Header("Dash")]
   public Image spdGauge;
@@ -49,6 +50,8 @@ public class UiManager : MonoBehaviour {
     BuildBase ();
     BuildRotater ();
     BuildEngine ();
+
+    BuildKeyboard ();
     yield return null;
   }
 
@@ -67,7 +70,7 @@ public class UiManager : MonoBehaviour {
     var disabledColor = new Color (1f, 1f, 1f, 0.25f);
     var enabledColor = new Color (0.2f, 0.2f, 0.2f, 0.5f);
 
-    Subject<BooledVariable<Quaternion>> rotSbj = new Subject<BooledVariable<Quaternion>> ();
+    rotSbj = new Subject<BooledVariable<Quaternion>> ();
     rotChanged = rotSbj;
 
     onRotUpdate
@@ -117,6 +120,20 @@ public class UiManager : MonoBehaviour {
     }
 
     engSbj.OnNext (2);
+  }
+
+  public void BuildKeyboard() {
+    var keyboard = new UiKeyboard ();
+    keyboard.Build ();
+
+    keyboard.OnFire
+      .Subscribe (_ => fireBtn.onClick.Invoke ());
+    keyboard.OnRot
+      .Select (v => {
+        var rot = Quaternion.AngleAxis(v.item, Vector3.forward);
+        return new BooledVariable<Quaternion>() { item = rot, b = v.b };
+      })
+      .Subscribe (v => rotSbj.OnNext(v));
   }
 
   public void UpdateTargetPosition(Vector3 pos, float dist) {
