@@ -9,6 +9,7 @@ Shader "Custom/Standard/Water" {
     _Metallic ("Metallic", Range(0, 1)) = 0
     _Gloss ("Gloss", Range(0, 1)) = 1
 
+    _BaseNormal ("Base Normal Power", Float) = 0
     [NoScaleOffset] _BumpMap0 ("Normal Map 0", 2D) = "bump" {}
     [NoScaleOffset] _BumpMap1 ("Normal Map 1", 2D) = "bump" {}
 
@@ -43,6 +44,8 @@ Shader "Custom/Standard/Water" {
 
     uniform half _Metallic;
     uniform half _Gloss;
+
+    uniform half _BaseNormal;
 
     uniform sampler2D _BumpMap0;
     uniform sampler2D _BumpMap1;
@@ -85,12 +88,11 @@ Shader "Custom/Standard/Water" {
       half3 normalDir  = i.normal;
       half3 viewDir    = normalize(_WorldSpaceCameraPos.xyz - i.worldPos);
       half3 lightDir   = normalize(_WorldSpaceLightPos0.xyz);
-      half3 reflectDir = reflect( -viewDir, normalDir );
 
       // normal direction
-      half3 bump0 = UnpackNormal(tex2D( _BumpMap0, i.bumpuv0 )).rgb;
-      half3 bump1 = UnpackNormal(tex2D( _BumpMap1, i.bumpuv1 )).rgb;
-      half3 bump = normalize(bump0 + bump1).rbg; // wtf
+      half3 bump0 = UnpackNormal(tex2D( _BumpMap0, i.bumpuv0 )).rbg;
+      half3 bump1 = UnpackNormal(tex2D( _BumpMap1, i.bumpuv1 )).rbg;
+      half3 bump = normalize(normalDir*_BaseNormal + bump0 + bump1);
       half3 bumpReflect = reflect( -viewDir, bump );
 
       // gi set

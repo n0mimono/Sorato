@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UniRx;
 
 public class Shooter : MonoBehaviour {
   public Transform[] slotOrigins;
@@ -50,6 +51,9 @@ public class Shooter : MonoBehaviour {
     }
   }
 
+  public IObservable<bool> OnShooted { private set; get; }
+  Subject<bool> shootSubject;
+
   public void Build(Status status) {
     slots = slotOrigins
       .Select (o => new Slot () {
@@ -58,6 +62,13 @@ public class Shooter : MonoBehaviour {
       .ToList ();
 
     this.status = status;
+
+    shootSubject = new Subject<bool> ();
+    OnShooted = shootSubject;
+
+    shootSubject
+      .Where (b => b)
+      .Subscribe (_ => Shoot ());
   }
 
   public void SetTarget(DamageReceptor target) {
@@ -69,9 +80,7 @@ public class Shooter : MonoBehaviour {
   }
 
   public void WillShoot() {
-    if (status.CanShoot) {
-      Shoot ();
-    }
+    shootSubject.OnNext (status.CanShoot);
   }
 
   public void Shoot() {

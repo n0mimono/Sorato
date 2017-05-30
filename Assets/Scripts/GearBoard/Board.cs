@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UniRx;
 
 namespace GearBoard {
   public class Board : MonoBehaviour {
@@ -10,8 +11,11 @@ namespace GearBoard {
     [Header("Options")]
     public Transform boostOrigin;
 
+    public Character character { private set; get; }
+
     public Kinematics kinematics { private set; get; }
     public Shooter shooter { private set; get; }
+
     public IEnumerable<DamageReceptor> damages {
       get {
         return GetComponentsInChildren<DamageReceptor> ();
@@ -48,6 +52,21 @@ namespace GearBoard {
           max = 20,
           recoverPerSec = 3f,
         });
+      }
+
+      character = characterRoot.GetComponentInChildren<Character> ();
+      if (character != null) {
+        kinematics.engine.OnStateChanged
+          .Subscribe (s => character.SetSpeed (Mathf.Max (0, 2 - (int)s)));
+
+        foreach (var dmg in damages) {
+          dmg.OnDamage
+            .Subscribe (d => character.InvokeDamage());
+        }
+
+        shooter.OnShooted
+          .Where (b => b)
+          .Subscribe (_ => character.InvokeFire ());
       }
 
       IsReady = true;

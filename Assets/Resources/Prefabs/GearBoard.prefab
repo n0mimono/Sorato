@@ -50,13 +50,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4695570163615276}
   - component: {fileID: 95792155400244168}
-  - component: {fileID: 114301597335078164}
-  - component: {fileID: 114895154987674728}
   - component: {fileID: 114853402727031430}
   - component: {fileID: 114059283068623524}
-  - component: {fileID: 114635483675529216}
-  - component: {fileID: 114040487880219244}
   - component: {fileID: 114096897216143390}
+  - component: {fileID: 114796370012850782}
   m_Layer: 0
   m_Name: Utc_sum
   m_TagString: Untagged
@@ -2596,8 +2593,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1415008189915100}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 5, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 4, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4131462885410734}
@@ -4797,7 +4794,7 @@ Animator:
   m_GameObject: {fileID: 1015257914158364}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: fa9a8f88311d9884698ea205e4b15297, type: 3}
-  m_Controller: {fileID: 9100000, guid: 5b9d1cd0e46c3e4438f1e54ceb7ccee5, type: 2}
+  m_Controller: {fileID: 9100000, guid: 4affaeb0839ed4c409294df9a9ce142c, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -5282,25 +5279,6 @@ MonoBehaviour:
   - {fileID: 114573577894691116}
   debug: 1
   threshold: 0.01
---- !u!114 &114040487880219244
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1015257914158364}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75453f0413251fd42811d1b1eb4728c1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ikActive: 0
-  lookAtObj: {fileID: 0}
-  lookAtWeight: 1
-  bodyWeight: 0.3
-  headWeight: 0.8
-  eyesWeight: 1
-  clampWeight: 0
-  isGUI: 0
 --- !u!114 &114049092608101492
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5705,21 +5683,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radius: 0.07
---- !u!114 &114301597335078164
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1015257914158364}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 058a2736f2afd564eae55007a87eed87, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _random: 0
-  _threshold: 0.5
-  _interval: 10
-  isGUI: 0
 --- !u!114 &114343593397842274
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6075,23 +6038,6 @@ MonoBehaviour:
   - {fileID: 114953874507552328}
   debug: 1
   threshold: 0.01
---- !u!114 &114635483675529216
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1015257914158364}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a38e39ada51aaba4db6d352ce218849e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isWindActive: 0
-  threshold: 0.5
-  interval: 5
-  windPower: 1
-  gravity: 0.98
-  isGUI: 0
 --- !u!114 &114642135237390584
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6229,6 +6175,26 @@ MonoBehaviour:
   - {fileID: 114184746831721554}
   debug: 1
   threshold: 0.01
+--- !u!114 &114796370012850782
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1015257914158364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72231dc151a57444c8c4974a9d55d48f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animations:
+  - {fileID: 7400000, guid: 7e0bc05df8ca13a409a6db548f739843, type: 2}
+  - {fileID: 7400000, guid: 1e6f13757e361f64e95251cdc2045132, type: 2}
+  - {fileID: 7400000, guid: 33ade5e0cbdd7c747b0a3e54ffe8048b, type: 2}
+  - {fileID: 7400000, guid: 5aa61c8a1b86d46498ec2ef6f46bca4b, type: 2}
+  - {fileID: 7400000, guid: c0b5c665faea4e2459e8b4d476c7fad0, type: 2}
+  - {fileID: 7400000, guid: 40c28a1d0eb0be14da0bf552f75c0a4a, type: 2}
+  - {fileID: 7400000, guid: b25b47b8477ed6b42ab855314194db65, type: 2}
+  - {fileID: 7400000, guid: 05c33fd3cf205484bb23d52f6dfce28c, type: 2}
 --- !u!114 &114797968368276460
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6320,40 +6286,6 @@ MonoBehaviour:
   - {fileID: 114573577894691116}
   debug: 1
   threshold: 0.01
---- !u!114 &114895154987674728
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1015257914158364}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e658bfc1e524494b9e54a1c92d8c1e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animations:
-  - {fileID: 7400000, guid: 7e0bc05df8ca13a409a6db548f739843, type: 2}
-  - {fileID: 7400000, guid: 5aa61c8a1b86d46498ec2ef6f46bca4b, type: 2}
-  - {fileID: 7400000, guid: b12705bcc0f99434fb185a23068543a3, type: 2}
-  - {fileID: 7400000, guid: 6ccc38a7c52beab4b84cf22bdaea38c9, type: 2}
-  - {fileID: 7400000, guid: b25b47b8477ed6b42ab855314194db65, type: 2}
-  - {fileID: 7400000, guid: bcb5530cdfa68884793197410d11ec48, type: 2}
-  - {fileID: 7400000, guid: 05c33fd3cf205484bb23d52f6dfce28c, type: 2}
-  - {fileID: 7400000, guid: 40c28a1d0eb0be14da0bf552f75c0a4a, type: 2}
-  - {fileID: 7400000, guid: 1e6f13757e361f64e95251cdc2045132, type: 2}
-  - {fileID: 7400000, guid: c0b5c665faea4e2459e8b4d476c7fad0, type: 2}
-  - {fileID: 7400000, guid: 90661dde7ad089a459c13791ee1f772d, type: 2}
-  - {fileID: 7400000, guid: 33ade5e0cbdd7c747b0a3e54ffe8048b, type: 2}
-  - {fileID: 7400000, guid: 3511f56cd3ed7624f90599ab09b41efc, type: 2}
-  - {fileID: 7400000, guid: 339860ac6c9c2a345806557da8297872, type: 2}
-  - {fileID: 7400000, guid: 732635195de67ab4789bff959af19a4e, type: 2}
-  - {fileID: 7400000, guid: 0f8e6cf049ffcf84098cdc63ec103d39, type: 2}
-  - {fileID: 7400000, guid: 6bb63a3878adfa742a1689223655f76e, type: 2}
-  - {fileID: 7400000, guid: 01e642e0aae05f34eb0859a0438757a5, type: 2}
-  - {fileID: 7400000, guid: aff422e8d7eaec148851692a962b9ba2, type: 2}
-  delayWeight: 3
-  isKeepFace: 1
-  isGUI: 0
 --- !u!114 &114927743411807154
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6767,7 +6699,33 @@ SkinnedMeshRenderer:
   m_SkinnedMotionVectors: 1
   m_Mesh: {fileID: 4300000, guid: fa9a8f88311d9884698ea205e4b15297, type: 3}
   m_Bones: []
-  m_BlendShapeWeights: []
+  m_BlendShapeWeights:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
   m_RootBone: {fileID: 0}
   m_AABB:
     m_Center: {x: 0, y: -0.04523672, z: 0.7536003}

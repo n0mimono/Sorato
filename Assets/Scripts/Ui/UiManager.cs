@@ -30,6 +30,7 @@ public class UiManager : MonoBehaviour {
   [Header("Engine")]
   public List<Button> engBtns;
   public IObservable<int> engChanged { private set; get; }
+  Subject<int> engSbj;
 
   [Header("Fire")]
   public Button fireBtn;
@@ -46,12 +47,16 @@ public class UiManager : MonoBehaviour {
   [Header("Player")]
   public UiCharacter chara;
 
+  bool useKeyBoard = false;
+
   public IEnumerator Build() {
     BuildBase ();
     BuildRotater ();
     BuildEngine ();
 
-    BuildKeyboard ();
+    if (useKeyBoard) {
+      BuildKeyboard ();
+    }
     yield return null;
   }
 
@@ -105,7 +110,7 @@ public class UiManager : MonoBehaviour {
   }
 
   void BuildEngine() {
-    Subject<int> engSbj = new Subject<int> ();
+    engSbj = new Subject<int> ();
     engChanged = engSbj;
 
     engSbj
@@ -128,12 +133,22 @@ public class UiManager : MonoBehaviour {
 
     keyboard.OnFire
       .Subscribe (_ => fireBtn.onClick.Invoke ());
+    keyboard.OnDash
+      .Subscribe (_ => dashBtn.onClick.Invoke ());
+
     keyboard.OnRot
       .Select (v => {
         var rot = Quaternion.AngleAxis(v.item, Vector3.forward);
         return new BooledVariable<Quaternion>() { item = rot, b = v.b };
       })
       .Subscribe (v => rotSbj.OnNext(v));
+
+    var keyGes = keyboard.OnGesture
+      .Select (v => v * 30f);
+    baseChanged = baseChanged.Merge (keyGes);
+
+    keyboard.OnEngine
+      .Subscribe (n => engSbj .OnNext(n));
   }
 
   public void UpdateTargetPosition(Vector3 pos, float dist) {

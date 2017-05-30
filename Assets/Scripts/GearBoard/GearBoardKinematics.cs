@@ -67,12 +67,20 @@ namespace GearBoard {
     public State state { private set; get; }
     public float speed { private set; get; }
 
+    public IObservable<State> OnStateChanged { private set; get; }
+    Subject<State> stateSubject;
+
     public Engine(Status status) {
       this.status = status;
+
+      stateSubject = new Subject<State> ();
+      OnStateChanged = stateSubject;
     }
 
     public void SetState(State state) {
       this.state = state;
+
+      stateSubject.OnNext (state);
     }
 
     public void Update(float dt, float addSpd) {
