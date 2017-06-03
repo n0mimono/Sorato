@@ -530,6 +530,12 @@ MonoBehaviour:
       no: 0
       autoKill: 1
       killDelay: 3
+  - obj: {fileID: 1374824349357286, guid: 6bc8608bcd1ef44dfbae5652de83ee18, type: 2}
+    prop:
+      type: 4
+      no: 0
+      autoKill: 1
+      killDelay: 7
   - obj: {fileID: 1149433969973470, guid: 32beafe1b3a8b41fb98ac147a3a35b4b, type: 2}
     prop:
       type: 3

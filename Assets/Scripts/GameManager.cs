@@ -17,11 +17,7 @@ public class GameManager : MonoBehaviour {
   [HideInInspector][SerializeField] new
   CameraManager camera;
 
-  Subject<ResultInfo> gameOver;
-
   IEnumerator Start() {
-    gameOver = new Subject<ResultInfo> ();
-
     yield return StartCoroutine (Build ());
     yield return StartCoroutine (StartGame ());
   }
@@ -92,10 +88,7 @@ public class GameManager : MonoBehaviour {
 
     ui.UpdateAsObservable ()
       .Subscribe (_ => tgtMan.UpdateTgtDist (board.shooter.distToTarget));
-    ui.extra.onClick.AddListener (() => {
-      var post = camera.GetComponent<UnityEngine.PostProcessing.PostProcessingBehaviour>();
-      post.enabled = !post.enabled;
-    });
+    ui.extra.onClick.AddListener (() => camera.FlipPostProcess());
     yield return null;
 
     board.kinematics.engine.SetState (Engine.State.Stop);
@@ -116,12 +109,14 @@ public class GameManager : MonoBehaviour {
       .Subscribe (d => ui.chara.SetFace (CharaFace.Smile));
     yield return null;
 
+    var gameOver = new Subject<ResultInfo> ();
+    gameOver.Take (1).Subscribe (r => StartCoroutine (Result (r)));
+
     board.status.OnDead
       .Subscribe (_ => gameOver.OnNext(new ResultInfo() { win = false, target = board.transform } ));
     var primeNpcBoard = npcs.FirstOrDefault ().board;
     primeNpcBoard.status.OnDead
       .Subscribe (_ => gameOver.OnNext (new ResultInfo() { win = true, target = primeNpcBoard.transform }));
-    gameOver.Take (1).Subscribe (r => StartCoroutine (Result (r)));
     yield return null;
 
     ui.baseChanged
@@ -161,9 +156,21 @@ public class GameManager : MonoBehaviour {
     yield return null;
     SceneStack.SetActive (false);
 
+    camera.UpShot (info.target);
+    yield return new WaitWhile (() => camera.upShot.IsActive);
+
+    for (int i = 0; i < 60; i++) {
+      Time.timeScale = 1f - i / 60f;
+      yield return null;
+    }
+    Time.timeScale = 0f;
+    yield return null;
+
+    yield return StartCoroutine (ui.result.Result(info.win));
+
     yield return StartCoroutine (SceneStack.Close ());
 
-    yield return null;
+    Time.timeScale = 1f;
     SceneStack.MoveScene ("Title");
   }
 

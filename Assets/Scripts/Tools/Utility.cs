@@ -4,13 +4,14 @@ using System;
 using UnityEngine;
 
 public static class Utility {
+  public const float deltaTime = 1f / 30f;
 
   public static Color WithAlpha(this Color color, float a) {
     return new Color (color.r, color.g, color.b, a);
   }
 
   public static IEnumerator Clock(float l, Action<float> onUpdate) {
-    for (float t = 0; t < l; t += Time.deltaTime) {
+    for (float t = 0; t < l; t += Utility.deltaTime) {
       onUpdate (t);
       yield return null;
     }

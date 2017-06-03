@@ -213,6 +213,10 @@ Prefab:
       propertyPath: m_Name
       value: Panel
       objectReference: {fileID: 0}
+    - target: {fileID: 1790954198482346, guid: b9dbf99e05df940a0a3e9ff0658a507c, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b9dbf99e05df940a0a3e9ff0658a507c, type: 2}
   m_IsPrefabParent: 0

@@ -27,7 +27,7 @@ namespace GearBoard {
     IEnumerator Npc() {
       board.kinematics.engine.SetState (Engine.State.TopForward);
 
-      while (true) {
+      while (board.status.isAlive) {
         board.kinematics.rotater.SetRotate (true, 315f);
         yield return new WaitForSeconds(5f);
 

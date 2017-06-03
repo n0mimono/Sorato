@@ -50,6 +50,9 @@ public class UiManager : MonoBehaviour {
   public Image hpBar;
   public UiCharacter chara;
 
+  [Header("Result")]
+  public UiResult result;
+
   bool useKeyBoard = false;
 
   public IEnumerator Build() {

@@ -77,6 +77,11 @@ namespace GearBoard {
         dmg.OnDamage
           .Subscribe (d => status.Damage(d.dmg));
       }
+      status.OnDead.Subscribe (_ => {
+        var burst = ObjectPool.GetInstance(PoolType.Kill, 0);
+        burst.transform.SetParent(transform);
+        burst.Activate(transform.position, transform.eulerAngles);
+      });
 
       IsReady = true;
     }
@@ -98,6 +103,7 @@ namespace GearBoard {
     public float maxHp;
     public float curHp;
     public float hp { get { return curHp / maxHp; } }
+    public bool isAlive { get { return curHp > 0f; } }
 
     public IObservable<Status> OnDamaged { private set; get; }
     Subject<Status> damageSbj;

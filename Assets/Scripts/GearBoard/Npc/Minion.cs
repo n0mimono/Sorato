@@ -37,7 +37,7 @@ namespace GearBoard {
     }
 
     IEnumerator Npc() {
-      while (true) {
+      while (board.status.isAlive) {
         yield return new WaitForSeconds (20f);
 
         effect.Play ();

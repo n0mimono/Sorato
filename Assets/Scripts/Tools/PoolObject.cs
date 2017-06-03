@@ -47,6 +47,7 @@ public enum PoolType {
   Explosion,
   Splash,
   Boost,
+  Kill,
 }
 
 [Serializable]

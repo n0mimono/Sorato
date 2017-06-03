@@ -11,10 +11,14 @@ public class CameraManager : MonoBehaviour {
   public Camera mainCamera;
 
   public CameraBase current { private set; get; }
+  public CameraUpShot upShot { private set; get; }
+
   Shaker shaker;
 
   public void Build() {
     current = new CameraBase ();
+    upShot = new CameraUpShot ();
+
     shaker = new Shaker ();
 
     cameraSubject = new Subject<Camera> ();
@@ -24,14 +28,31 @@ public class CameraManager : MonoBehaviour {
   public void UpdateCamera() {
     shaker.Update ();
 
-    mainCamera.transform.forward = current.trans.forward;
-    mainCamera.transform.position = current.trans.position + shaker.offset;
+    if (upShot.IsActive) {
+      upShot.Update (Time.deltaTime);
+      mainCamera.transform.forward = Vector3.Lerp (current.trans.forward, upShot.forward, upShot.blend).normalized;
+      mainCamera.transform.position = Vector3.Lerp (current.trans.position, upShot.position, upShot.blend);
+    } else {
+      mainCamera.transform.forward = current.trans.forward;
+      mainCamera.transform.position = current.trans.position + shaker.offset;
+    }
 
     cameraSubject.OnNext (mainCamera);
   }
 
   public void Shake() {
     shaker.Invoke ();
+  }
+
+  public void UpShot(Transform tgt) {
+    if (!upShot.IsActive) {
+      upShot.StartUpShot (tgt, mainCamera.transform);
+    }
+  }
+
+  public void FlipPostProcess() {
+    var post = GetComponent<UnityEngine.PostProcessing.PostProcessingBehaviour> ();
+    post.enabled = !post.enabled;
   }
 
   public ScreenPoint ScreenPosition(Vector3 world) {
@@ -107,24 +128,6 @@ public class CameraBase {
 
   public void Rotate(Vector3 angs) {
     trans.Update (angs);
-  }
-
-}
-
-public class Shaker {
-  float decay = 0.01f;
-  float coef  = 0.2f;
-
-  float intensity = 0f;
-  public Vector3 offset { private set; get; }
-
-  public void Update() {
-    offset = Random.insideUnitSphere * intensity;
-    intensity = Mathf.Max (0f, intensity - decay);
-  }
-
-  public void Invoke() {
-    intensity = coef;
   }
 
 }
