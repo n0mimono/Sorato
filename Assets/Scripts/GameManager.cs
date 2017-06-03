@@ -11,7 +11,6 @@ public class GameManager : MonoBehaviour {
   public Board board;
   public BoardNpc[] npcs;
 
-  ResourceManager resource;
   UiManager ui;
   TargetManager tgtMan;
 
@@ -28,8 +27,7 @@ public class GameManager : MonoBehaviour {
   }
 
   IEnumerator Build() {
-    resource = new ResourceManager ();  
-    yield return StartCoroutine (resource.LoadSceneAsync ("SoratoUi"));
+    yield return StartCoroutine (SceneStack.LoadSceneAsync ("SoratoUi"));
 
     ui = GameObject.FindObjectOfType<UiManager> ();
     yield return StartCoroutine(ui.Build());
@@ -146,7 +144,7 @@ public class GameManager : MonoBehaviour {
   }
 
   IEnumerator StartGame() {
-    yield return StartCoroutine (ui.Open ());
+    yield return StartCoroutine (SceneStack.Open ());
 
     ui.hpBar.GetComponent<UiAutoFill> ().StartFill ();
     yield return null;
@@ -156,16 +154,17 @@ public class GameManager : MonoBehaviour {
     }
 
     yield return null;
-    ui.SetActive (true);
+    SceneStack.SetActive (true);
   }
 
   IEnumerator Result(ResultInfo info) {
     yield return null;
-    ui.SetActive (false);
+    SceneStack.SetActive (false);
 
-    yield return StartCoroutine (ui.Close ());
+    yield return StartCoroutine (SceneStack.Close ());
 
     yield return null;
+    SceneStack.MoveScene ("Title");
   }
 
 }

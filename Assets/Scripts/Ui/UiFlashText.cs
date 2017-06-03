@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UiFlash : MonoBehaviour {
+public class UiFlashText : MonoBehaviour {
   public bool activeOnStart;
 
-  Image image;
+  Text text;
 
   Color orgColor;
   Color fullColor;
@@ -15,9 +15,9 @@ public class UiFlash : MonoBehaviour {
   float elapse;
 
   void Start() {
-    image = GetComponent<Image> ();
+    text = GetComponent<Text> ();
 
-    orgColor = image.color;
+    orgColor = text.color;
     fullColor = new Color (
       orgColor.r + (1f - orgColor.r) * 0.5f,
       orgColor.g + (1f - orgColor.g) * 0.5f,
@@ -32,8 +32,8 @@ public class UiFlash : MonoBehaviour {
   void Update() {
     if (isActive) {
       elapse += Time.deltaTime;
-      var t = Mathf.PingPong (elapse, 2f) * 0.5f;
-      image.color = Color.Lerp (orgColor, fullColor, t);
+      var t = Mathf.PingPong (elapse, 1f);
+      text.color = Color.Lerp (orgColor, fullColor, t);
     }
   }
 
@@ -42,7 +42,7 @@ public class UiFlash : MonoBehaviour {
       elapse = 0.5f;
     } else if (this.isActive && !isActive) {
       elapse = 0f;
-      image.color = orgColor;
+      text.color = orgColor;
     }
 
     this.isActive = isActive;

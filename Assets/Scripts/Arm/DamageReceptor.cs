@@ -28,7 +28,7 @@ public class DamageReceptor : MonoBehaviour {
 
   public void Receive(DamageSource source) {
     dmgSubject.OnNext (new Damage () {
-      dmg = 1f
+      dmg = 100f
     });
   }
 

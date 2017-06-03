@@ -50,9 +50,6 @@ public class UiManager : MonoBehaviour {
   public Image hpBar;
   public UiCharacter chara;
 
-  [Header("Stop")]
-  public Image stop;
-
   bool useKeyBoard = false;
 
   public IEnumerator Build() {
@@ -170,20 +167,6 @@ public class UiManager : MonoBehaviour {
 
     candidates.Add (target);
     return target;
-  }
-
-  public IEnumerator Open() {
-    yield return StartCoroutine (Utility.Clock (2f,
-      t => stop.color = Color.white.WithAlpha (1f - t)));
-  }
-
-  public IEnumerator Close() {
-    yield return StartCoroutine (Utility.Clock (2f,
-      t => stop.color = Color.white.WithAlpha (t)));
-  }
-
-  public void SetActive(bool isActive) {
-    stop.enabled = !isActive;
   }
 
 }
