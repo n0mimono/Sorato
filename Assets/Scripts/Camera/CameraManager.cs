@@ -34,16 +34,27 @@ public class CameraManager : MonoBehaviour {
     shaker.Invoke ();
   }
 
-  public Vector3 ScreenPosition(Vector3 world) {
-    Vector3 viewPoint = mainCamera.WorldToViewportPoint (world);
+  public ScreenPoint ScreenPosition(Vector3 world) {
+    var viewPoint = mainCamera.WorldToViewportPoint (world);
+    var scrPoint = mainCamera.WorldToScreenPoint (world);
     if (viewPoint.z > 0f) {
-      Vector3 scrPoint = mainCamera.WorldToScreenPoint (world);
-      return new Vector2 (scrPoint.x, scrPoint.y);
+      return new ScreenPoint () {
+        pos = new Vector2 (scrPoint.x, scrPoint.y),
+        isForward = true
+      };
     } else {
-      return new Vector2 (-1000f, -1000f);
+      return new ScreenPoint() {
+        pos = new Vector2 (scrPoint.x, scrPoint.y),
+        isForward = false
+      };
     }
   }
 
+}
+
+public struct ScreenPoint {
+  public Vector2 pos;
+  public bool isForward;
 }
 
 public class CameraBase {

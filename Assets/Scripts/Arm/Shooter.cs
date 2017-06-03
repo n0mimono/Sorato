@@ -21,6 +21,7 @@ public class Shooter : MonoBehaviour {
 
     public int count { get { return Mathf.FloorToInt(gauge); } }
     public float power { get { return gauge / max; } } 
+    public bool full { private set; get; }
 
     public float wait;
 
@@ -33,13 +34,16 @@ public class Shooter : MonoBehaviour {
     public void Update(float dt) {
       wait -= dt;
       if (wait <= 0f) {
-        gauge = Mathf.Min (gauge + recoverPerSec * dt, max);
+        var rawGauge = gauge + recoverPerSec * dt;
+        full = rawGauge >= max;
+        gauge = Mathf.Min (rawGauge, max);
       }
     }
 
     public void Shoot() {
       gauge -= 1f;
       wait = 0.5f;
+      full = false;
     }
   }
   public Status status { private set; get; }
@@ -47,7 +51,11 @@ public class Shooter : MonoBehaviour {
   public DamageReceptor target { private set; get; }
   public float distToTarget {
     get {
-      return Vector3.Distance (transform.position, target.position);
+      if (target != null) {
+        return Vector3.Distance (transform.position, target.position);
+      } else {
+        return 0f;
+      }
     }
   }
 

@@ -21,6 +21,7 @@ namespace GearBoard {
 
     public float power { private set; get; }
     public float speed { private set; get; }
+    public bool  full  { private set; get; }
 
     public bool Consume() {
       if (power < status.consumePerShot) {
@@ -29,6 +30,7 @@ namespace GearBoard {
         speed = status.speed;
         power -= status.consumePerShot;
         status.wait = 0.5f;
+        full = false;
         return true;
       }
     }
@@ -36,7 +38,9 @@ namespace GearBoard {
     public void Update(float dt) {
       status.wait -= dt;
       if (status.wait <= 0f) {
-        power = Mathf.Clamp01 (power + status.recoverPerSec * dt);
+        var rawPower = power + status.recoverPerSec * dt;
+        full = rawPower >= 1f;
+        power = Mathf.Clamp01 (rawPower);
       }
       speed = Mathf.Lerp (speed, 1f, status.deceleration * dt);
     }

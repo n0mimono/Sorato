@@ -18,6 +18,8 @@ Shader "Custom/Standard/Water" {
 
     _Mip("Cupe Mip Resolution", Range(1, 10)) = 7
     [KeywordEnum(BRDF1, BRDF2, BRDF3)] _PBS_QUALITY("PBR Quality", Float) = 0
+
+    _AmpFog ("Amplify Fog", Float) = 1
   }
   SubShader {
     Tags { "RenderType"="Opaque" }
@@ -52,7 +54,9 @@ Shader "Custom/Standard/Water" {
     uniform half4 _WaveSpeed4;
     uniform half4 _WaveScale4;
     uniform half _Mip;
- 
+
+    uniform half _AmpFog;
+
     struct v2f {
       float4 pos      : SV_POSITION;
       float2 uv       : TEXCOORD0;
@@ -115,6 +119,9 @@ Shader "Custom/Standard/Water" {
       // calc PBS
       fixed4 col = STANDARD_PBS(diffColor, specColor, oneMinusReflectivity, _Gloss, bump, viewDir, gi.light, gi.indirect);
 
+      #if defined(FOG_LINEAR) || defined(FOG_EXP) || defined(FOG_EXP2)
+      i.fogCoord = i.fogCoord * _AmpFog;
+      #endif
       UNITY_APPLY_FOG(i.fogCoord, col);
       return col;
     }

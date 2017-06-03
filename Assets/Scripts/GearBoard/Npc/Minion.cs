@@ -4,14 +4,15 @@ using System.Linq;
 using UnityEngine;
 
 namespace GearBoard {
-  public class Minion : MonoBehaviour {
+  public class Minion : BoardNpc {
     public ParticleSystem effect;
 
-    Board board;
-
-    void Start() {
+    public override void Build() {
       board = GetComponent<Board> ();
-      board.Build ();
+      board.Build (new Status () {
+        maxHp = 100f,
+        curHp = 100f,
+      });
       board.kinematics.engine.SetState (Engine.State.Stop);
 
       // re-build
@@ -29,6 +30,9 @@ namespace GearBoard {
       board.shooter.SetTarget (tgt);
 
       effect.Stop ();
+    }
+
+    public override void StartNpc() {
       StartCoroutine (Npc ());
     }
 

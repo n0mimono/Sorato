@@ -26,6 +26,7 @@ public class UiManager : MonoBehaviour {
   public Button dashBtn;
   public Image dashGauge;
   public Text dashText;
+  public UiFlash dashFlash;
 
   [Header("Engine")]
   public List<Button> engBtns;
@@ -36,16 +37,21 @@ public class UiManager : MonoBehaviour {
   public Button fireBtn;
   public Image fireGauge;
   public Text fireText;
+  public UiFlash fireFlash;
 
   [Header("Target")]
-  public Image playerTarget;
-  public Text playerTargetTxt;
+  public UiTarget targetPrefab;
+  public List<UiTarget> candidates { private set; get; }
 
   [Header("Extra")]
   public Button extra;
 
   [Header("Player")]
+  public Image hpBar;
   public UiCharacter chara;
+
+  [Header("Stop")]
+  public Image stop;
 
   bool useKeyBoard = false;
 
@@ -53,6 +59,7 @@ public class UiManager : MonoBehaviour {
     BuildBase ();
     BuildRotater ();
     BuildEngine ();
+    BuildTargets ();
 
     if (useKeyBoard) {
       BuildKeyboard ();
@@ -127,6 +134,10 @@ public class UiManager : MonoBehaviour {
     engSbj.OnNext (2);
   }
 
+  public void BuildTargets() {
+    candidates = new List<UiTarget> ();
+  }
+
   public void BuildKeyboard() {
     var keyboard = new UiKeyboard ();
     keyboard.Build ();
@@ -151,9 +162,28 @@ public class UiManager : MonoBehaviour {
       .Subscribe (n => engSbj .OnNext(n));
   }
 
-  public void UpdateTargetPosition(Vector3 pos, float dist) {
-    playerTarget.transform.position = pos;
-    playerTargetTxt.text = dist.ToString ("F1") + " m";
+  public UiTarget CreateTarget() {
+    var target = Instantiate (targetPrefab, targetPrefab.transform.parent);
+    target.Build ();
+
+    target.name = targetPrefab.name;
+
+    candidates.Add (target);
+    return target;
+  }
+
+  public IEnumerator Open() {
+    yield return StartCoroutine (Utility.Clock (2f,
+      t => stop.color = Color.white.WithAlpha (1f - t)));
+  }
+
+  public IEnumerator Close() {
+    yield return StartCoroutine (Utility.Clock (2f,
+      t => stop.color = Color.white.WithAlpha (t)));
+  }
+
+  public void SetActive(bool isActive) {
+    stop.enabled = !isActive;
   }
 
 }

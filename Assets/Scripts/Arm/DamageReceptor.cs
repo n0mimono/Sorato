@@ -28,12 +28,12 @@ public class DamageReceptor : MonoBehaviour {
 
   public void Receive(DamageSource source) {
     dmgSubject.OnNext (new Damage () {
-      dmg = 0
+      dmg = 1f
     });
   }
 
 }
 
 public struct Damage {
-  public int dmg;
+  public float dmg;
 }

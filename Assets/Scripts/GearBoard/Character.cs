@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace GearBoard {
@@ -7,9 +8,11 @@ namespace GearBoard {
     public AnimationClip[] animations;
 
     Animator animator;
+    string[] animStrs;
 
     void Awake() {
       animator = GetComponent<Animator> ();
+      animStrs = animations.Select (a => a.name).ToArray ();
     }
 
     public void SetSpeed(int spd) {
@@ -24,13 +27,11 @@ namespace GearBoard {
       animator.SetTrigger ("Damage");
     }
 
-    public void OnCallChangeFace (string str) {      
-      foreach (var animation in animations) {
-        if (str == animation.name) {
-          Debug.Log (str);
-          animator.CrossFade (str, 0);
-          break;
-        }
+    public void OnCallChangeFace (string str) {
+      if (animStrs.Contains (str)) {
+        animator.CrossFade (str, 0);
+      } else {
+        animator.CrossFade ("default", 0);
       }
     }
 

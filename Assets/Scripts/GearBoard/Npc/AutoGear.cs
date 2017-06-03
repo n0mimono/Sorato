@@ -4,20 +4,23 @@ using System.Linq;
 using UnityEngine;
 
 namespace GearBoard {
-  public class AutoGear : MonoBehaviour {
+  public class AutoGear : BoardNpc {
 
-    Board board;
-
-    void Start() {
+    public override void Build() {
       board = GetComponent<Board> ();
-      board.Build ();
+      board.Build (new Status () {
+        maxHp = 100f,
+        curHp = 100f,
+      });
       board.kinematics.engine.SetState (Engine.State.Stop);
 
       var tgt = GameObject.FindObjectsOfType<DamageReceptor> ()
         .Where (r => r.owner == DamageReceptor.Owner.Player)
         .FirstOrDefault ();
       board.shooter.SetTarget (tgt);
+    }
 
+    public override void StartNpc() {
       StartCoroutine (Npc ());
     }
 

@@ -54,6 +54,7 @@ GameObject:
   - component: {fileID: 114059283068623524}
   - component: {fileID: 114096897216143390}
   - component: {fileID: 114796370012850782}
+  - component: {fileID: 114856366291128626}
   m_Layer: 0
   m_Name: Utc_sum
   m_TagString: Untagged
@@ -6262,6 +6263,18 @@ MonoBehaviour:
   timeBlink: 0.4
   threshold: 0.3
   interval: 3
+--- !u!114 &114856366291128626
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1015257914158364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd92941e4bdc04d18ae4ec17d1d53698, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scale: 1
 --- !u!114 &114882499181595124
 MonoBehaviour:
   m_ObjectHideFlags: 1

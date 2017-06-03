@@ -16,15 +16,19 @@ namespace GearBoard {
     public Kinematics kinematics { private set; get; }
     public Shooter shooter { private set; get; }
 
-    public IEnumerable<DamageReceptor> damages {
-      get {
-        return GetComponentsInChildren<DamageReceptor> ();
-      }
-    }
+    public Status status { private set; get; }
+
+    public DamageReceptor[] damages { private set; get; }
 
     public bool IsReady { private set; get; }
 
-    public void Build() {
+    void Start() {
+      damages = GetComponentsInChildren<DamageReceptor> ();
+    }
+
+    public void Build(Status status) {
+      this.status = status;
+
       kinematics = new Kinematics (
         new Engine(new Engine.Status() {
           speed = 30f,
@@ -69,6 +73,11 @@ namespace GearBoard {
           .Subscribe (_ => character.InvokeFire ());
       }
 
+      foreach (var dmg in damages) {
+        dmg.OnDamage
+          .Subscribe (d => status.Damage(d.dmg));
+      }
+
       IsReady = true;
     }
 
@@ -84,4 +93,39 @@ namespace GearBoard {
     }
 
   }
+
+  public class Status {
+    public float maxHp;
+    public float curHp;
+    public float hp { get { return curHp / maxHp; } }
+
+    public IObservable<Status> OnDamaged { private set; get; }
+    Subject<Status> damageSbj;
+
+    public IObservable<int> OnDead { private set; get; }
+    Subject<int> deadSbj;
+
+    public Status() {
+      deadSbj = new Subject<int> ();
+      OnDead = deadSbj;
+
+      damageSbj = new Subject<Status> ();
+      OnDamaged = damageSbj;
+    }
+
+    public void Damage(float dmg) {
+      if (curHp <= 0f) {
+        return;
+      }
+
+      curHp -= dmg;
+      damageSbj.OnNext (this);
+
+      if (curHp <= 0f) {
+        curHp = 0f;
+        deadSbj.OnNext(1);
+      }
+    }
+  }
+
 }
