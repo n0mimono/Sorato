@@ -1,0 +1,9 @@
+{
+"TOTAL_MEMORY": 268435456,
+"dataUrl": "Sorato.data.unityweb",
+"asmCodeUrl": "Sorato.asm.code.unityweb",
+"asmMemoryUrl": "Sorato.asm.memory.unityweb",
+"asmFrameworkUrl": "Sorato.asm.framework.unityweb",
+"splashScreenStyle": "Dark",
+"backgroundColor": "#222C36"
+}
