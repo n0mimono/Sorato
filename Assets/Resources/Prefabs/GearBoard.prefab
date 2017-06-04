@@ -6138,6 +6138,7 @@ MonoBehaviour:
   characterRoot: {fileID: 1187996413022450}
   gearRoot: {fileID: 1426744843553488}
   boostOrigin: {fileID: 4595661624705050}
+  killBurstNo: 0
 --- !u!114 &114739722650797000
 MonoBehaviour:
   m_ObjectHideFlags: 1

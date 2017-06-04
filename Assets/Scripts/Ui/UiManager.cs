@@ -42,6 +42,8 @@ public class UiManager : MonoBehaviour {
   [Header("Target")]
   public UiTarget targetPrefab;
   public List<UiTarget> candidates { private set; get; }
+  public RectTransform lineVertical;
+  public RectTransform lineHorizontal;
 
   [Header("Extra")]
   public Button extra;

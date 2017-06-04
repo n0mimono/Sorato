@@ -66,4 +66,8 @@ public class UiTarget : MonoBehaviour {
     transform.localEulerAngles = new Vector3 (0f, flip ? 180f : 0f, 0f);
   }
 
+  public void Stop() {
+    gameObject.SetActive (false);
+  }
+
 }

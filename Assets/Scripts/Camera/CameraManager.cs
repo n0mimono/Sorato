@@ -43,10 +43,10 @@ public class CameraManager : MonoBehaviour {
     shaker.Invoke ();
   }
 
-  public void UpShot(Transform tgt, Action onComplete) {
+  public void UpShot(Transform tgt) {
     if (!upShot.IsActive) {
       upShot.Initialize (tgt, mainCamera.transform);
-      StartCoroutine (upShot.UpShot ().OnComplete(onComplete));
+      StartCoroutine (upShot.UpShot ());
     }
   }
 

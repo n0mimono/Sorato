@@ -52,6 +52,8 @@ public class GameManager : MonoBehaviour {
       c.OnDistChanged.Subscribe (d => uiTarget.UpdateTargetDist (d));
       c.OnTargetChanged.Subscribe (b => uiTarget.SetActiveTarget (b));
       c.board.status.OnDamaged.Subscribe (d => uiTarget.dmgImage.fillAmount = d.hp);
+      c.board.status.OnDead.Subscribe (_ => uiTarget.Stop());
+      c.board.status.OnDead.Subscribe (_ => tgtMan.candidates.Remove(c));
     }
     yield return null;
 
@@ -88,6 +90,12 @@ public class GameManager : MonoBehaviour {
 
     ui.UpdateAsObservable ()
       .Subscribe (_ => tgtMan.UpdateTgtDist (board.shooter.distToTarget));
+    tgtMan.OnScreenTargetChanged
+      .Subscribe (p => {
+        ui.lineVertical.position = Vector3.right * p.x;
+        ui.lineHorizontal.position = Vector3.up * p.y;
+      });
+
     ui.extra.onClick.AddListener (() => camera.FlipPostProcess());
     yield return null;
 
@@ -109,14 +117,22 @@ public class GameManager : MonoBehaviour {
       .Subscribe (d => ui.chara.SetFace (CharaFace.Smile));
     yield return null;
 
+    board.status.OnDead
+      .Subscribe (_ => camera.UpShot(board.transform));
+    foreach (var b in npcs.Select(n => n.board)) {
+      b.status.OnDead
+        .Subscribe (_ => camera.UpShot(b.transform));
+    }
+    yield return null;
+
     var gameOver = new Subject<ResultInfo> ();
     gameOver.Take (1).Subscribe (r => StartCoroutine (Result (r)));
 
     board.status.OnDead
-      .Subscribe (_ => gameOver.OnNext(new ResultInfo() { win = false, target = board.transform } ));
+      .Subscribe (_ => gameOver.OnNext(new ResultInfo() { win = false } ));
     var primeNpcBoard = npcs.FirstOrDefault ().board;
     primeNpcBoard.status.OnDead
-      .Subscribe (_ => gameOver.OnNext (new ResultInfo() { win = true, target = primeNpcBoard.transform }));
+      .Subscribe (_ => gameOver.OnNext (new ResultInfo() { win = true }));
     yield return null;
 
     ui.baseChanged
@@ -155,12 +171,8 @@ public class GameManager : MonoBehaviour {
   IEnumerator Result(ResultInfo info) {
     yield return null;
     SceneStack.SetActive (false);
-
-    var camNext = false;
-    camera.UpShot (info.target, () => camNext = true);
-    yield return new WaitUntil (() => camNext);
    
-    yield return new WaitForSeconds (2f);
+    yield return new WaitForSeconds (1.5f);
 
     var goNext = false;
     StartCoroutine (ui.result.Result(info.win, () => goNext = true));
@@ -183,5 +195,4 @@ public class GameManager : MonoBehaviour {
 
 public struct ResultInfo {
   public bool win;
-  public Transform target;
 }

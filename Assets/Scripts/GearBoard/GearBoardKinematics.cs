@@ -94,6 +94,10 @@ namespace GearBoard {
         status.acceleration * dt
       );
     }
+
+    public void Stop() {
+      status.speed = 0f;
+    }
   }
 
   public class Rotater {
@@ -135,6 +139,10 @@ namespace GearBoard {
         status.acceleration * dt
       );
 
+    }
+
+    public void Stop() {
+      status.speed = 0f;
     }
   }
 
@@ -210,6 +218,12 @@ namespace GearBoard {
       bool success = booster.Consume ();
       boostSubject.OnNext (success);
     }
+
+    public void Stop() {
+      engine.Stop();
+      rotater.Stop();
+    }
+
   }
 
 }

@@ -13,6 +13,10 @@ public class TargetManager {
   public IObservable<Damage> OnDamage { private set; get; }
   Subject<Damage> dmgSubject;
 
+  public IObservable<Vector2> OnScreenTargetChanged { private set; get; }
+  Subject<Vector2> scrTgtSubject;
+
+
   public class Candidate {
     public GearBoard.Board board;
     public DamageReceptor receptor;
@@ -60,6 +64,9 @@ public class TargetManager {
     dmgSubject = new Subject<Damage> ();
     OnDamage = dmgSubject;
 
+    scrTgtSubject = new Subject<Vector2> ();
+    OnScreenTargetChanged = scrTgtSubject;
+
     candidates = GameObject.FindObjectsOfType<DamageReceptor> ()
       .Where (r => r.owner == DamageReceptor.Owner.Enemy)
       .Select(r => new Candidate() {
@@ -81,8 +88,9 @@ public class TargetManager {
     });
   }
 
-  public void Update(Vector3 center) {
-    var scrTgt = CalcScreenTarget (center);
+  public void Update(Vector3 scrBoard) {
+    var scrTgt = CalcScreenTarget (scrBoard);
+    scrTgtSubject.OnNext (scrTgt);
 
     var prev = target;
 
@@ -106,23 +114,12 @@ public class TargetManager {
     }
   }
 
-  Vector3 CalcScreenTarget(Vector3 center) {
+  Vector3 CalcScreenTarget(Vector3 scrBoard) {
     var screen = new Vector3 (Screen.width , Screen.height, 0f);
-    var offset = center - screen * 0.5f;
+    var center = screen * 0.5f;
 
-    var corner = Vector3.zero;
-    if (offset.x >= 0f && offset.y >= 0f) {
-      corner = new Vector3 (0f, 0f);
-    } else if (offset.x <= 0f && offset.y >= 0f) {
-      corner = new Vector3 (screen.x, 0f);
-    } else if (offset.x <= 0f && offset.y <= 0f) {
-      corner = new Vector3 (screen.x, screen.y);
-    } else if (offset.x >= 0f && offset.y <= 0f) {
-      corner = new Vector3 (0f, screen.y);
-    }
-    var scrTgt = (center + corner) * 0.5f;
-
-    return scrTgt;
+    var offset = scrBoard - center;
+    return center - offset * 0.5f;
   }
 
 }

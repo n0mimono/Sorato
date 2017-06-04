@@ -531,10 +531,16 @@ MonoBehaviour:
       no: 0
       autoKill: 1
       killDelay: 3
-  - obj: {fileID: 1374824349357286, guid: 6bc8608bcd1ef44dfbae5652de83ee18, type: 2}
+  - obj: {fileID: 1119701153732754, guid: 6b0d8c1149fa34cae9d606b8252b85d8, type: 2}
     prop:
       type: 4
       no: 0
+      autoKill: 1
+      killDelay: 7
+  - obj: {fileID: 1374824349357286, guid: 6bc8608bcd1ef44dfbae5652de83ee18, type: 2}
+    prop:
+      type: 4
+      no: 1
       autoKill: 1
       killDelay: 7
   - obj: {fileID: 1149433969973470, guid: 32beafe1b3a8b41fb98ac147a3a35b4b, type: 2}
@@ -630,6 +636,7 @@ GameObject:
   - component: {fileID: 1620894109}
   - component: {fileID: 1620894114}
   - component: {fileID: 1620894115}
+  - component: {fileID: 1620894116}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -731,6 +738,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   profile: {fileID: 11400000, guid: 99e543e7ed0924f5b9de7108f51104ca, type: 2}
+--- !u!114 &1620894116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1620894108}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b9f4878beb2643b0b469f7a4413d489, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wait: 0
+  isReady: 1
 --- !u!114 &1799121538 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114663237620684356, guid: a434d8b2ac55c4f14a23b3cb67dc523d,

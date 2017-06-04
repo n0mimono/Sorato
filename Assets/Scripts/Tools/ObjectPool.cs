@@ -34,6 +34,9 @@ public class ObjectPool : MonoBehaviour {
         p.prop.type == type &&
         p.prop.no == no
       );
+      if (entity == null) {
+        Debug.LogWarning("No object: " + type + ", " + no);
+      }
 
       var prefab = entity.obj;
       var prop = entity.prop;

@@ -10,6 +10,7 @@ namespace GearBoard {
 
     [Header("Options")]
     public Transform boostOrigin;
+    public int killBurstNo;
 
     public Character character { private set; get; }
 
@@ -78,10 +79,12 @@ namespace GearBoard {
           .Subscribe (d => status.Damage(d.dmg));
       }
       status.OnDead.Subscribe (_ => {
-        var burst = ObjectPool.GetInstance(PoolType.Kill, 0);
+        var burst = ObjectPool.GetInstance(PoolType.Kill, killBurstNo);
         burst.transform.SetParent(transform);
         burst.Activate(transform.position, transform.eulerAngles);
       });
+      status.OnDead.Subscribe (_ => kinematics.Stop ());
+      status.OnDead.Subscribe (_ => StartCoroutine (Sink ()));
 
       IsReady = true;
     }
@@ -95,6 +98,14 @@ namespace GearBoard {
     void UpdateState() {
       kinematics.Update (Time.deltaTime);
       shooter.UpdateState(Time.deltaTime);
+    }
+
+    IEnumerator Sink() {
+      yield return new WaitForSeconds (4f);
+
+      if (character != null) {
+        gameObject.SetActive (false);
+      }
     }
 
   }
