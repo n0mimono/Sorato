@@ -156,18 +156,23 @@ public class GameManager : MonoBehaviour {
     yield return null;
     SceneStack.SetActive (false);
 
-    camera.UpShot (info.target);
-    yield return new WaitWhile (() => camera.upShot.IsActive);
+    var camNext = false;
+    camera.UpShot (info.target, () => camNext = true);
+    yield return new WaitUntil (() => camNext);
+   
+    yield return new WaitForSeconds (2f);
 
-    for (int i = 0; i < 60; i++) {
-      Time.timeScale = 1f - i / 60f;
+    var goNext = false;
+    StartCoroutine (ui.result.Result(info.win, () => goNext = true));
+
+    for (int i = 0; i < 30; i++) {
+      Time.timeScale = 1f - i / 30f;
       yield return null;
     }
     Time.timeScale = 0f;
     yield return null;
 
-    yield return StartCoroutine (ui.result.Result(info.win));
-
+    yield return new WaitUntil (() => goNext);
     yield return StartCoroutine (SceneStack.Close ());
 
     Time.timeScale = 1f;

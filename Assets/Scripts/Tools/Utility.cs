@@ -19,5 +19,12 @@ public static class Utility {
     onUpdate (l);
   }
 
-}
+  public static IEnumerator OnComplete(this IEnumerator routine, Action onComplete) {
+    while (routine.MoveNext()) {
+      yield return routine.Current;
+    }
 
+    onComplete ();
+  }
+
+}
