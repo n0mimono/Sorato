@@ -75,7 +75,13 @@ public class UiResult : MonoBehaviour {
       effectRect.localScale = Vector3.one * (1f + t * 2f * 0.2f);
     });
 
-    yield return null;
+    if (win) {
+      Voice.Play (VO.Win);
+    } else {
+      Voice.Play (VO.Lose);
+    }
+    yield return new WaitForSeconds(0.5f);
+
     resultBtn.gameObject.SetActive(true);
 
     var goNext = false;
@@ -84,6 +90,8 @@ public class UiResult : MonoBehaviour {
     });
 
     yield return new WaitUntil (() => goNext);
+    Voice.Play (VO.BackToTitle);
+
     gameObject.SetActive (false);
 
     onComplete ();

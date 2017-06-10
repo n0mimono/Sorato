@@ -103,6 +103,8 @@ public class GameManager : MonoBehaviour {
     board.kinematics.OnBoosted
       .Where (b => b)
       .Subscribe (_ => ui.chara.SetFace (CharaFace.Cool));
+    board.shooter.OnShooted
+      .Subscribe (_ => Voice.Play (VO.Attack));
 
     board.status.OnDamaged.Subscribe (s => ui.hpBar.fillAmount = s.hp);
     yield return null;
@@ -112,13 +114,19 @@ public class GameManager : MonoBehaviour {
         .Subscribe (d => camera.Shake ());
       dmg.OnDamage
         .Subscribe (d => ui.chara.SetFace(CharaFace.Ouch));
+      dmg.OnDamage
+        .Subscribe (d => Voice.Play(VO.Damage));
     }
     tgtMan.OnDamage
       .Subscribe (d => ui.chara.SetFace (CharaFace.Smile));
+    tgtMan.OnDamage
+      .Subscribe (d => Voice.Play(VO.Hit));
     yield return null;
 
     board.status.OnDead
       .Subscribe (_ => camera.UpShot(board.transform));
+    board.status.OnDead
+      .Subscribe (_ => Voice.Play(VO.Dead));
     foreach (var b in npcs.Select(n => n.board)) {
       b.status.OnDead
         .Subscribe (_ => camera.UpShot(b.transform));
@@ -155,6 +163,7 @@ public class GameManager : MonoBehaviour {
   }
 
   IEnumerator StartGame() {
+    Voice.Play (VO.Start);
     yield return StartCoroutine (SceneStack.Open ());
 
     ui.hpBar.GetComponent<UiAutoFill> ().StartFill ();

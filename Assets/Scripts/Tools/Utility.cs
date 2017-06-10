@@ -27,4 +27,9 @@ public static class Utility {
     onComplete ();
   }
 
+  public static T Random<T>(this List<T> list) {
+    var index = Mathf.FloorToInt (UnityEngine.Random.value * list.Count);
+    return list [index];
+  }
+
 }
