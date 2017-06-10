@@ -40,6 +40,7 @@ public class PoolObject : MonoBehaviour {
     yield return new WaitForSeconds (Prop.killDelay);
     SetActive (false);
   }
+
 }
 
 public enum PoolType {

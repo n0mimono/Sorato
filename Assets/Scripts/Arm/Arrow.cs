@@ -40,6 +40,9 @@ public class Arrow : MonoBehaviour {
     transform.position = p.origin.position;
     transform.forward = p.origin.up * -1f;
     pooled.SetActive (true);
+
+    var player = SoundEffect.Play (SE.Attack, 0, null);
+    player.transform.position = transform.position;
   }
 
   void Update() {
@@ -84,6 +87,7 @@ public class Arrow : MonoBehaviour {
 
       var splash = ObjectPool.GetInstance (PoolType.Splash, 0);
       splash.Activate (hit.point, a);
+      SoundEffect.Play (SE.Water, 1, splash.transform);
 
       if (!waterable) {
         Kill ();
@@ -91,6 +95,7 @@ public class Arrow : MonoBehaviour {
     } else if (elapse >= 0.5f) {
       var explosion = ObjectPool.GetInstance (PoolType.Explosion, explosionNo);
       explosion.Activate (hit.point, transform.eulerAngles);
+      SoundEffect.Play (SE.Attack, 1, explosion.transform);
 
       var recep = hit.collider.GetComponent<DamageReceptor> ();
       if (recep != null) {

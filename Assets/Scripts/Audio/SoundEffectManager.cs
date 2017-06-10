@@ -9,19 +9,63 @@ public class SoundEffectManager : MonoBehaviour {
   public class SoundEffect {
     public int type;
     public int no;
-    public AudioSource source;
+    public AudioClip clip;
+    public bool loop;
+    public float volume = 1f;
+    public float blend = 1f;
   }
   public List<SoundEffect> seList;
 
   SoundEffect latest;
 
-  public void Play(int type, int no) {
+  List<AudioSource> pool;
+
+  void Awake() {
+    pool = new List<AudioSource> ();
+  }
+
+  public AudioSource Play(int type, int no, Transform parent) {
     var s = seList.FirstOrDefault (a => a.type == type && a.no == no);
     if (s == null) {
       Debug.LogWarning (type + ", " + no);
     }
 
-    s.source.Play ();
+    var player = pool.FirstOrDefault (p => !p.isPlaying);
+    if (player == null) {
+      GameObject go = new GameObject ("SE");
+      player = go.AddComponent<AudioSource> ();
+      pool.Add (player);
+    }
+
+    player.transform.SetParent (parent);
+    player.transform.localPosition = Vector3.zero;
+
+    player.clip = s.clip;
+    player.volume = s.volume;
+    player.loop = s.loop;
+    player.spatialBlend = s.blend;
+    if (s.loop) {
+      player.Play ();
+    } else {
+      StartCoroutine (PlayAudio (player));
+    }
+
+    return player;
+  }
+
+  IEnumerator PlayAudio(AudioSource player) {
+    player.Play ();
+
+    yield return new WaitForSeconds (player.clip.length);
+    player.Stop ();
+
+    player.transform.SetParent (transform);
+  }
+
+  public void StopAll() {
+    foreach (var p in pool) {
+      StartCoroutine (p.LazyStop ());
+    }
   }
 
 }
@@ -34,8 +78,8 @@ public static class SoundEffect {
     }
   }
 
-  public static void Play(int type, int no) {
-    instance.Play (type, no);
+  public static AudioSource Play(SE type, int no, Transform parent) {
+    return instance.Play ((int)type, no, parent);
   }
  
 }

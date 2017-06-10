@@ -80,8 +80,6 @@ public class UiResult : MonoBehaviour {
     } else {
       Voice.Play (VO.Lose);
     }
-    yield return new WaitForSeconds(0.5f);
-
     resultBtn.gameObject.SetActive(true);
 
     var goNext = false;

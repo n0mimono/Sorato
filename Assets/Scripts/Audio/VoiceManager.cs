@@ -10,34 +10,35 @@ public class VoiceManager : MonoBehaviour {
   [Serializable]
   public class Voice {
     public List<AudioClip> clips;
+    public float time;
   }
   public List<Voice> voices;
 
-  float elapse = 10f;
-  int latest = -1;
+  public List<AudioClip> adlibs;
+  float elapse;
 
   public void Play(int no) {
-    if (no == latest && elapse < 3f) {
-      return;
-    }
-    if (no != latest && elapse < 1f) {
-      return;
-    }
-
     var voice = voices [no];
     if (voice == null) {
       Debug.LogWarning (no);
     }
+    if (Time.time - voice.time < 2f) {
+      return;
+    }
+    voice.time = Time.time;
 
     source.clip = voice.clips.Random();
     source.Play ();
-
     elapse = 0f;
-    latest = no;
   }
 
   void Update() {
     elapse += Time.deltaTime;
+    if (elapse > 10f) {
+      source.clip = adlibs.Random();
+      source.Play ();
+      elapse = 0f;
+    }
   }
 
 }

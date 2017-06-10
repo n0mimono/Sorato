@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
+using UniRx.Triggers;
 
 namespace GearBoard {
   public class Board : MonoBehaviour {
@@ -85,6 +86,19 @@ namespace GearBoard {
       });
       status.OnDead.Subscribe (_ => kinematics.Stop ());
       status.OnDead.Subscribe (_ => StartCoroutine (Sink ()));
+      status.OnDead.Subscribe (_ => SoundEffect.Play (SE.Attack, 2, transform));
+
+      var playerWind = SoundEffect.Play (SE.Move, 2, transform);
+      var orgVolWing = playerWind.volume;
+      var soundWind = this.UpdateAsObservable ()
+        .Subscribe (_ => playerWind.volume = kinematics.speedRate * orgVolWing);
+      status.OnDead.Subscribe (_ => soundWind.Dispose());
+
+      var playerEngine = SoundEffect.Play (SE.Move, 0, transform);
+      status.OnDead.Subscribe (_ => playerEngine.Stop());
+
+      kinematics.OnBoosted
+        .Subscribe(_ => SoundEffect.Play (SE.Move, 1, transform));
 
       IsReady = true;
     }

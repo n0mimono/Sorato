@@ -32,4 +32,15 @@ public static class Utility {
     return list [index];
   }
 
+  public static IEnumerator LazyStop(this AudioSource source) { 
+    var orgVolume = source.volume;
+
+    for (int i = 0; i < 60; i++) {
+      source.volume = orgVolume * (60 - i) / 60f;
+      yield return null;
+    }
+
+    source.Stop ();
+    source.volume = orgVolume;
+  }
 }

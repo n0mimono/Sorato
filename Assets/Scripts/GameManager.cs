@@ -178,6 +178,9 @@ public class GameManager : MonoBehaviour {
   }
 
   IEnumerator Result(ResultInfo info) {
+    GameObject.FindObjectOfType<BgmManager> ().StopAll ();
+    GameObject.FindObjectOfType<SoundEffectManager> ().StopAll ();
+
     yield return null;
     SceneStack.SetActive (false);
    
