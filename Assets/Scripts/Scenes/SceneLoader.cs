@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour {
   public Image stop;
+  public Image rotater;
 
   void Start() {
     if (SceneManager.sceneCount == 1) {
@@ -74,6 +75,7 @@ public class SceneStack {
   }
 
   public static IEnumerator Open() {
+    Instance.rotater.gameObject.SetActive (false);
     yield return Instance.StartCoroutine (Utility.Clock (2f,
       t => Instance.stop.color = Color.white.WithAlpha (1f - t)));
   }
@@ -81,6 +83,7 @@ public class SceneStack {
   public static IEnumerator Close() {
     yield return Instance.StartCoroutine (Utility.Clock (2f,
       t => Instance.stop.color = Color.white.WithAlpha (t)));
+    Instance.rotater.gameObject.SetActive (true);
   }
 
   public static void SetActive(bool isActive) {
