@@ -71,14 +71,11 @@ namespace GearBoard {
     public State state { private set; get; }
     public float speed { private set; get; }
 
-    public IObservable<State> OnStateChanged { private set; get; }
-    Subject<State> stateSubject;
+    public IObservable<State> OnStateChanged { get { return stateSubject; } }
+    Subject<State> stateSubject = new Subject<State>();
 
     public Engine(Status status) {
       this.status = status;
-
-      stateSubject = new Subject<State> ();
-      OnStateChanged = stateSubject;
     }
 
     public void SetState(State state) {
@@ -156,8 +153,8 @@ namespace GearBoard {
     public const float MaxHeight = 200f;
     public const float MinHeight = 1f;
 
-    public IObservable<bool> OnBoosted { private set; get; }
-    private Subject<bool> boostSubject;
+    public IObservable<bool> OnBoosted { get { return boostSubject; } }
+    Subject<bool> boostSubject = new Subject<bool>();
 
     public float speedRate {
       get {
@@ -170,9 +167,6 @@ namespace GearBoard {
       this.rotater = rotater;
       this.booster = booster;
       this.trans = tran;
-
-      boostSubject = new Subject<bool> ();
-      OnBoosted = boostSubject;
 
       OnBoosted
         .Where (b => b)

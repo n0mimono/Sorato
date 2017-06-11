@@ -6,8 +6,8 @@ using UniRx;
 using UniRx.Triggers;
 
 public class CameraManager : MonoBehaviour {
-  public IObservable<Camera> OnUpdated { private set; get; }
-  Subject<Camera> cameraSubject;
+  public IObservable<Camera> OnUpdated { get { return cameraSubject; } }
+  Subject<Camera> cameraSubject = new Subject<Camera>();
 
   public Camera mainCamera;
 
@@ -20,9 +20,6 @@ public class CameraManager : MonoBehaviour {
     upShot = new CameraUpShot ();
 
     shaker = new Shaker ();
-
-    cameraSubject = new Subject<Camera> ();
-    OnUpdated = cameraSubject;
   }
 
   public void UpdateCamera() {

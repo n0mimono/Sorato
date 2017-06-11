@@ -130,18 +130,13 @@ namespace GearBoard {
     public float hp { get { return curHp / maxHp; } }
     public bool isAlive { get { return curHp > 0f; } }
 
-    public IObservable<Status> OnDamaged { private set; get; }
-    Subject<Status> damageSbj;
+    public IObservable<Status> OnDamaged { get { return damageSbj; } }
+    Subject<Status> damageSbj = new Subject<Status>();
 
-    public IObservable<int> OnDead { private set; get; }
-    Subject<int> deadSbj;
+    public IObservable<int> OnDead { get { return deadSbj; } }
+    Subject<int> deadSbj = new Subject<int>();
 
     public Status() {
-      deadSbj = new Subject<int> ();
-      OnDead = deadSbj;
-
-      damageSbj = new Subject<Status> ();
-      OnDamaged = damageSbj;
     }
 
     public void Damage(float dmg) {

@@ -13,7 +13,7 @@ public class JetFormController : MonoBehaviour {
 
   AudioSource source;
 
-  void Awake() {
+  void Start() {
     particles = GetComponentsInChildren<ParticleSystem> ();
 
     source = SoundEffect.Play (SE.Water, 0, transform);

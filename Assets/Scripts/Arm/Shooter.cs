@@ -59,8 +59,8 @@ public class Shooter : MonoBehaviour {
     }
   }
 
-  public IObservable<bool> OnShooted { private set; get; }
-  Subject<bool> shootSubject;
+  public IObservable<bool> OnShooted { get { return shootSubject; } }
+  Subject<bool> shootSubject = new Subject<bool>();
 
   public void Build(Status status) {
     slots = slotOrigins
@@ -70,9 +70,6 @@ public class Shooter : MonoBehaviour {
       .ToList ();
 
     this.status = status;
-
-    shootSubject = new Subject<bool> ();
-    OnShooted = shootSubject;
 
     shootSubject
       .Where (b => b)

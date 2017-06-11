@@ -5,8 +5,8 @@ using UniRx;
 using UniRx.Triggers;
 
 public class DamageReceptor : MonoBehaviour {
-  public IObservable<Damage> OnDamage { private set; get; }
-  Subject<Damage> dmgSubject;
+  public IObservable<Damage> OnDamage { get { return dmgSubject; } }
+  Subject<Damage> dmgSubject = new Subject<Damage>();
 
   public Vector3 position {
     get {
@@ -20,11 +20,6 @@ public class DamageReceptor : MonoBehaviour {
     Enemy,
   }
   public Owner owner;
-
-  void Awake() {
-    dmgSubject = new Subject<Damage> ();
-    OnDamage = dmgSubject;
-  }
 
   public void Receive(DamageSource source) {
     dmgSubject.OnNext (new Damage () {

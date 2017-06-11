@@ -15,8 +15,8 @@ public class UiManager : MonoBehaviour {
   [Header("Rotation")]
   public Image rot;
   public Image rotSub;
-  public IObservable<BooledVariable<Quaternion>> rotChanged { private set; get; }
-  Subject<BooledVariable<Quaternion>> rotSbj;
+  public IObservable<BooledVariable<Quaternion>> rotChanged { get { return rotSbj; } }
+  Subject<BooledVariable<Quaternion>> rotSbj = new Subject<BooledVariable<Quaternion>> ();
 
   [Header("Dash")]
   public Image spdGauge;
@@ -30,8 +30,8 @@ public class UiManager : MonoBehaviour {
 
   [Header("Engine")]
   public List<Button> engBtns;
-  public IObservable<int> engChanged { private set; get; }
-  Subject<int> engSbj;
+  public IObservable<int> engChanged { get { return engSbj; } }
+  Subject<int> engSbj = new Subject<int>();
 
   [Header("Fire")]
   public Button fireBtn;
@@ -84,9 +84,6 @@ public class UiManager : MonoBehaviour {
     var disabledColor = new Color (1f, 1f, 1f, 0.25f);
     var enabledColor = new Color (0.2f, 0.2f, 0.2f, 0.5f);
 
-    rotSbj = new Subject<BooledVariable<Quaternion>> ();
-    rotChanged = rotSbj;
-
     onRotUpdate
       .Select (p => new Vector3 (p.position.x, p.position.y, 0f))
       .Select (p => {
@@ -119,9 +116,6 @@ public class UiManager : MonoBehaviour {
   }
 
   void BuildEngine() {
-    engSbj = new Subject<int> ();
-    engChanged = engSbj;
-
     engSbj
       .Subscribe (index => {
         engBtns.ForEach (e => e.interactable = true);

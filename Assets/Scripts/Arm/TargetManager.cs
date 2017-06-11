@@ -7,14 +7,14 @@ using UniRx.Triggers;
 
 
 public class TargetManager {
-  public IObservable<Candidate> targetChanged { private set; get; }
-  Subject<Candidate> targetSubject;
+  public IObservable<Candidate> targetChanged { get { return targetSubject; } }
+  Subject<Candidate> targetSubject = new Subject<Candidate>();
 
-  public IObservable<Damage> OnDamage { private set; get; }
-  Subject<Damage> dmgSubject;
+  public IObservable<Damage> OnDamage { get { return dmgSubject; } }
+  Subject<Damage> dmgSubject = new Subject<Damage>();
 
-  public IObservable<Vector2> OnScreenTargetChanged { private set; get; }
-  Subject<Vector2> scrTgtSubject;
+  public IObservable<Vector2> OnScreenTargetChanged { get { return scrTgtSubject; } }
+  Subject<Vector2> scrTgtSubject = new Subject<Vector2>();
 
 
   public class Candidate {
@@ -22,23 +22,14 @@ public class TargetManager {
     public DamageReceptor receptor;
     public Vector3 scrPosition;
 
-    public IObservable<ScreenPoint> OnPositionChanged { private set; get;}
-    Subject<ScreenPoint> scrSbj;
-    public IObservable<float> OnDistChanged { private set; get;}
-    Subject<float> distSbj;
-    public IObservable<bool> OnTargetChanged { private set; get;}
-    Subject<bool> tgtSbj;
+    public IObservable<ScreenPoint> OnPositionChanged { get { return scrSbj; } }
+    Subject<ScreenPoint> scrSbj = new Subject<ScreenPoint>();
+    public IObservable<float> OnDistChanged { get { return distSbj; } }
+    Subject<float> distSbj = new Subject<float>();
+    public IObservable<bool> OnTargetChanged { get { return tgtSbj; } }
+    Subject<bool> tgtSbj = new Subject<bool>();
 
     public Candidate() {
-      scrSbj = new Subject<ScreenPoint>();
-      OnPositionChanged = scrSbj;
-
-      distSbj = new Subject<float>();
-      OnDistChanged = distSbj;
-
-      tgtSbj = new Subject<bool>();
-      OnTargetChanged = tgtSbj;
-
       OnPositionChanged.Subscribe(p => scrPosition = p.pos);
     }
 
@@ -58,15 +49,6 @@ public class TargetManager {
   public Candidate target { private set; get; }
 
   public TargetManager() {
-    targetSubject = new Subject<Candidate> ();
-    targetChanged = targetSubject;
-
-    dmgSubject = new Subject<Damage> ();
-    OnDamage = dmgSubject;
-
-    scrTgtSubject = new Subject<Vector2> ();
-    OnScreenTargetChanged = scrTgtSubject;
-
     candidates = GameObject.FindObjectsOfType<DamageReceptor> ()
       .Where (r => r.owner == DamageReceptor.Owner.Enemy)
       .Select(r => new Candidate() {
