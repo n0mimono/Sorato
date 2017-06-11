@@ -5,6 +5,6 @@ using UnityEngine;
 public class BgmManager : MonoBehaviour {
   public void StopAll() {
     var bgm = GetComponent<AudioSource> ();
-    StartCoroutine (bgm.LazyStop ());
+    StartCoroutine (bgm.LazyStop (() => {}));
   }
 }

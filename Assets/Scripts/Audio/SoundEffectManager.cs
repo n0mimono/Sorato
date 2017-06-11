@@ -30,7 +30,7 @@ public class SoundEffectManager : MonoBehaviour {
       Debug.LogWarning (type + ", " + no);
     }
 
-    var player = pool.FirstOrDefault (p => !p.isPlaying);
+    var player = pool.FirstOrDefault (p => !p.gameObject.activeInHierarchy);
     if (player == null) {
       GameObject go = new GameObject ("SE");
       player = go.AddComponent<AudioSource> ();
@@ -44,6 +44,7 @@ public class SoundEffectManager : MonoBehaviour {
     player.volume = s.volume;
     player.loop = s.loop;
     player.spatialBlend = s.blend;
+    player.gameObject.SetActive (true);
     if (s.loop) {
       player.Play ();
     } else {
@@ -60,11 +61,12 @@ public class SoundEffectManager : MonoBehaviour {
     player.Stop ();
 
     player.transform.SetParent (transform);
+    player.gameObject.SetActive (false);
   }
 
   public void StopAll() {
     foreach (var p in pool) {
-      StartCoroutine (p.LazyStop ());
+      StartCoroutine (p.LazyStop (() => p.gameObject.SetActive(false)));
     }
   }
 
