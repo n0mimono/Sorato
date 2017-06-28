@@ -71,7 +71,10 @@ public class UiManager : MonoBehaviour {
 
   void BuildBase() {
     var baseGes = basePanel.GetComponent<UiGesture> ();
-    baseChanged = baseGes.OnSwipe.Select (s => s.delta);
+    baseChanged = baseGes.OnSwipe
+      .Select (s => s.delta)
+      .Select (v => new Vector2 (v.x / Screen.width, v.y / Screen.height))
+      .Select (p => new Vector2 (p.x * 1000f, p.y * 500f));
   }
 
   void BuildRotater() {
