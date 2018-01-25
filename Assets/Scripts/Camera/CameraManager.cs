@@ -10,6 +10,7 @@ public class CameraManager : MonoBehaviour {
   Subject<Camera> cameraSubject = new Subject<Camera>();
 
   public Camera mainCamera;
+  public Transform anchor;
 
   public ICamera current { private set; get; }
   public CameraUpShot upShot { private set; get; }
@@ -26,11 +27,11 @@ public class CameraManager : MonoBehaviour {
     shaker.Update ();
 
     if (upShot.IsActive) {
-      mainCamera.transform.forward = upShot.ForwardBy (current);
-      mainCamera.transform.position = upShot.PositionBy(current);
+      anchor.forward = upShot.ForwardBy (current);
+      anchor.position = upShot.PositionBy(current);
     } else {
-      mainCamera.transform.forward = current.forward;
-      mainCamera.transform.position = current.position + shaker.offset;
+      anchor.forward = current.forward;
+      anchor.position = current.position + shaker.offset;
     }
 
     cameraSubject.OnNext (mainCamera);

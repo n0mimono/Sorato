@@ -16,10 +16,11 @@ public class CanborController {
     Observable
       .EveryUpdate()
       .Subscribe(_ => {
-        delta = new Vector2(
-          Input.GetAxis("Mouse X"),
-          Input.GetAxis("Mouse Y")
+        var pos = new Vector2(
+          2f * Input.mousePosition.x / Screen.width - 1f,
+          2f * Input.mousePosition.y / Screen.height - 1f
         );
+        delta = pos;
       });
 
     Observable
@@ -33,7 +34,7 @@ public class CanborController {
     Observable
       .EveryUpdate()
       .Where(_ => triggered)
-      .Subscribe(_ => sbjGesture.OnNext(0.2f * delta));
+      .Subscribe(_ => sbjGesture.OnNext(0.5f * delta));
     
     var rotSubject = new Subject<BooledVariable<float>>();
     OnRot = rotSubject;
@@ -42,7 +43,7 @@ public class CanborController {
       .EveryUpdate()
       .Where(_ => !triggered)
       .Select(_ => {
-        if (delta.magnitude < 1) {
+        if (delta.magnitude < 0.2f) {
           return new BooledVariable<float> { b = false, item = 0f };
         } else {
           var ang = Vector2.Angle(Vector2.up, delta.normalized);
