@@ -56,6 +56,7 @@ public class UiManager : MonoBehaviour {
   public UiResult result;
 
   bool useKeyBoard = false;
+  bool useCanbor = true;
 
   public IEnumerator Build() {
     BuildBase ();
@@ -65,6 +66,9 @@ public class UiManager : MonoBehaviour {
 
     if (useKeyBoard) {
       BuildKeyboard ();
+    }
+    if (useCanbor) {
+      BuildCanbor();
     }
     yield return null;
   }
@@ -126,8 +130,14 @@ public class UiManager : MonoBehaviour {
       e.button.onClick.AsObservable()
         .Subscribe (_ => engSbj.OnNext (e.index));
     }
+  }
 
-    engSbj.OnNext (2);
+  public void StartEngine() {
+    if (useCanbor) {
+      engSbj.OnNext(0);
+    } else {
+      engSbj.OnNext(2);
+    }
   }
 
   public void BuildTargets() {
@@ -156,6 +166,22 @@ public class UiManager : MonoBehaviour {
 
     keyboard.OnEngine
       .Subscribe (n => engSbj .OnNext(n));
+  }
+
+  public void BuildCanbor() {
+    var canbor = new CanborController();
+    canbor.Build();
+
+    canbor.OnRot
+      .Select(v => {
+        var rot = Quaternion.AngleAxis(v.item, Vector3.forward);
+        return new BooledVariable<Quaternion>() { item = rot, b = v.b };
+      })
+      .Subscribe(v => rotSbj.OnNext(v));
+
+    var keyGes = canbor.OnGesture
+      .Select(v => v * 30f);
+    baseChanged = baseChanged.Merge(keyGes);
   }
 
   public UiTarget CreateTarget() {

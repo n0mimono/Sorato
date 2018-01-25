@@ -29,8 +29,8 @@ public class GameManager : MonoBehaviour {
     yield return StartCoroutine(ui.Build());
 
     board.Build (new Status () {
-      maxHp = 20f,
-      curHp = 20f,
+      maxHp = 2000f,
+      curHp = 2000f,
     });
     foreach (var npc in npcs) {
       npc.Build ();
@@ -167,6 +167,7 @@ public class GameManager : MonoBehaviour {
     yield return StartCoroutine (SceneStack.Open ());
 
     ui.hpBar.GetComponent<UiAutoFill> ().StartFill ();
+    ui.StartEngine();
     yield return null;
 
     foreach (var npc in npcs) {
