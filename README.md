@@ -1,5 +1,7 @@
 # Sorato (WIP)
 
+https://github.com/n0mimono/Sorato/wiki
+
 <img src="https://github.com/n0mimono/Sorato/wiki/Screenshots/screenshot_a21.png" width="640">
 
 ---
